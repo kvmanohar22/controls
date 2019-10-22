@@ -82,7 +82,7 @@ bool Window::render() {
     line_renderer_->render(Vector3d(0, 0, 0), 1.0f, Vector3d(0, 1, 0));
 
     // Render the points    
-    renderer_->render(controller_->x() , 5.0f, Eigen::Vector3d(1, 1, 1));
+    renderer_->render(controller_->x() , 2.0f, Eigen::Vector3d(1, 1, 1));
 
     glfwSwapBuffers(shared_window_);
     glfwPollEvents();
