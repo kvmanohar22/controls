@@ -3,6 +3,7 @@
 
 #include "gl3w/gl3w.h"
 #include <GLFW/glfw3.h>
+#include "glm/ext.hpp"
 
 #include <Eigen/StdVector>
 #include <Eigen/src/Core/Matrix.h>

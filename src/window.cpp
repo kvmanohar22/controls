@@ -3,7 +3,10 @@
 
 namespace controls {
 
+Window* WindowCallbackHelper::window_instance = nullptr;
+
 Window::~Window() {
+  delete camera_;
   render_thread_.join();
 }
 
@@ -31,6 +34,22 @@ bool Window::show() {
   return true;
 }
 
+void Window::process_input(GLFWwindow* window) {
+  float current_frame = glfwGetTime();
+  delta_time_ = current_frame - last_frame_;
+  last_frame_ = current_frame;
+  float camera_speed = 2.5f * delta_time_;
+
+  if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    camera_->process_keyboard(camera_movement::FORWARD, delta_time_);
+  else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    camera_->process_keyboard(camera_movement::BACKWARD, delta_time_);
+  else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    camera_->process_keyboard(camera_movement::LEFT, delta_time_);
+  else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    camera_->process_keyboard(camera_movement::RIGHT, delta_time_);
+}
+
 bool Window::render() {
   glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
   shared_window_ = glfwCreateWindow(width_, height_, name_.c_str(), NULL, window_);
@@ -44,12 +63,13 @@ bool Window::render() {
   glfwSetErrorCallback([](int error, const char* description) {
     fprintf(stderr, "Error %d: %s\n", error, description);
   });
+  // WindowCallbackHelper::setupScrollCallback(shared_window_, this);
+  // WindowCallbackHelper::setupMouseCallback(shared_window_, this);
 
   // projection and view matrices
   glm::mat4 projection = glm::perspective(
     glm::radians(45.0f), static_cast<float>(width_)/static_cast<float>(height_),
     0.1f, 100.0f);
-  /* TODO: Change the view matrix dynamically */
   glm::mat4 view = glm::lookAt(
     glm::vec3(0, 0, 100),
     glm::vec3(0.0f, 0.0f, 0.0f), 
@@ -76,12 +96,19 @@ bool Window::render() {
   // render the points!
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   while(!glfwWindowShouldClose(shared_window_)) {
+    process_input(shared_window_);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    view = camera_->get_view_matrix();
+
     // Render the axes
+    line_shader_->use();
+    line_shader_->setmat4("view", view);
     line_renderer_->render(Vector3d(0, 0, 0), 1.0f, Vector3d(0, 1, 0));
 
-    // Render the points    
+    // Render the points
+    shader_->use();
+    shader_->setmat4("view", view);
     renderer_->render(controller_->x() , 2.0f, Eigen::Vector3d(1, 1, 1));
 
     glfwSwapBuffers(shared_window_);
