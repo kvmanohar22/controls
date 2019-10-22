@@ -9,11 +9,10 @@ out VS_OUT {
 uniform mat4 model;
 uniform mat4 view;
 uniform float size;
-uniform vec3 color;
 uniform mat4 projection;
 
 void main() {
-  vs_out.col = color;
+  vs_out.col = icol;
   gl_Position = projection * view * model * vec4(ipos, 1.0f);
   gl_PointSize = size;
 }

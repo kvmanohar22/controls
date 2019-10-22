@@ -18,7 +18,7 @@ void Renderer::init() {
   glBindVertexArray(VAO_);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3*sizeof(float)));
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3*sizeof(float)));
   glEnableVertexAttribArray(1);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
@@ -33,7 +33,6 @@ void Renderer::render(Vector3d pos,
 
   shader_->use();
   shader_->setmat4("model", model);
-  shader_->setvec3("color", glm::vec3(col.x(), col.y(), col.z()));
   shader_->setf("size", size);
   
   glBindVertexArray(VAO_);
