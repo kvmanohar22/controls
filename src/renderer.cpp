@@ -6,7 +6,7 @@ namespace controls {
 void Renderer::init() {
   float vertices[] = {
     // positions      // color
-    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+    0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
   };
 
   unsigned int VBO;
@@ -24,8 +24,21 @@ void Renderer::init() {
   glBindVertexArray(0);
 }
 
-void Renderer::render() {
-  // TODO: Implement
+void Renderer::render(Vector3d pos,
+    float size,
+    Vector3d col)
+{
+  glm::mat4 model = glm::mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+  model = glm::translate(model, glm::vec3(pos.x(), pos.y(), pos.z()));
+
+  shader_->use();
+  shader_->setmat4("model", model);
+  shader_->setvec3("color", glm::vec3(col.x(), col.y(), col.z()));
+  shader_->setf("size", size);
+  
+  glBindVertexArray(VAO_);
+  glDrawArrays(GL_POINTS, 0, 1);
+  glBindVertexArray(0);
 }
 
 } // namespace controls

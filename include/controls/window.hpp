@@ -4,6 +4,7 @@
 #include "controls/global.hpp"
 #include "controls/renderer.hpp"
 #include "controls/shader.hpp"
+#include "controls/linear_continuous_system.hpp"
 
 #include <iostream>
 #include <thread>
@@ -15,10 +16,11 @@ class Window {
 public:
   Window() =default;
  ~Window();
-  explicit Window(size_t width, size_t height, std::string name)
+  explicit Window(size_t width, size_t height, std::string name, CLTIS* controller)
     : width_(width),
       height_(height),
-      name_(name)
+      name_(name),
+      controller_(controller)
   {
     init();
   }
@@ -31,8 +33,12 @@ private:
   size_t      width_;
   size_t      height_;
   std::string name_;
-  Renderer*   renderer_;
   Shader*     shader_;
+  Renderer*   renderer_;
+  Shader*     line_shader_;
+  Renderer*   line_renderer_;
+  CLTIS*      controller_;
+
 
   GLFWwindow* window_;
   GLFWwindow* shared_window_;

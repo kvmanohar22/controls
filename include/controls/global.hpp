@@ -19,7 +19,7 @@ namespace controls {
   using namespace Eigen;
 
   static constexpr double PI = 3.1415926535;
-  static constexpr double dt = 1e-7;
+  static constexpr double dt = 1e-3;
 }
 
 #endif

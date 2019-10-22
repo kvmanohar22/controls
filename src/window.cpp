@@ -45,29 +45,44 @@ bool Window::render() {
     fprintf(stderr, "Error %d: %s\n", error, description);
   });
 
-  /* TODO: Define projection matrix */
-  glm::mat4 projection = glm::ortho(
-    0.0f, static_cast<float>(width_),
-    static_cast<float>(height_), 0.0f,
-    -1.0f, 1.0f);
+  // projection and view matrices
+  glm::mat4 projection = glm::perspective(
+    glm::radians(45.0f), static_cast<float>(width_)/static_cast<float>(height_),
+    0.1f, 100.0f);
+  /* TODO: Change the view matrix dynamically */
+  glm::mat4 view = glm::lookAt(
+    glm::vec3(0, 0, 100),
+    glm::vec3(0.0f, 0.0f, 0.0f), 
+    glm::vec3(0.0f, 1.0f, 0.0f));
 
-  shader_ = new Shader("../shaders/shader.vs", "../shaders/shader.fs");
-  renderer_ = new Renderer(shader_);
+  shader_ = new Shader("../shaders/shader.vs", "../shaders/shader.fs", nullptr);
+  line_shader_ = new Shader("../shaders/shader.vs", "../shaders/shader.fs", "../shaders/line.gs");
 
   shader_->use();
-  shader_->seti("image", 0);
   shader_->setmat4("projection", projection);
+  shader_->setmat4("view", view);
+
+  line_shader_->use();
+  line_shader_->setmat4("projection", projection);
+  line_shader_->setmat4("view", view);
+
+  renderer_ = new Renderer(shader_);
+  line_renderer_ = new Renderer(line_shader_);
 
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_MULTISAMPLE);
   glEnable(GL_PROGRAM_POINT_SIZE);
 
-  // render mosaic!
+  // render the points!
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   while(!glfwWindowShouldClose(shared_window_)) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    /* TODO: Render the evolution of points */
+    // Render the axes
+    line_renderer_->render(Vector3d(0, 0, 0), 1.0f, Vector3d(0, 1, 0));
+
+    // Render the points    
+    renderer_->render(controller_->x() , 5.0f, Eigen::Vector3d(1, 1, 1));
 
     glfwSwapBuffers(shared_window_);
     glfwPollEvents();

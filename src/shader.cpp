@@ -1,15 +1,16 @@
-#include "controls/shader.h"
+#include "controls/shader.hpp"
 
 namespace controls {
 
 Shader::Shader(
   const char *v_path, 
-  const char *f_path)
+  const char *f_path,
+  const char *g_path)
 {
-  std::ifstream v_file, f_file;
+  std::ifstream v_file, f_file, g_file;
   v_file.open(v_path); assert(v_file.is_open());
   f_file.open(f_path); assert(f_file.is_open());
-  std::stringstream v_stream, f_stream;
+  std::stringstream v_stream, f_stream, g_stream;
 
   v_stream << v_file.rdbuf();
   f_stream << f_file.rdbuf();
@@ -49,9 +50,34 @@ Shader::Shader(
              << std::endl;
   }
 
+  // Geometry shader
+  unsigned int g_shader;
+  if(g_path != nullptr) {
+    g_file.open(g_path);
+    assert(g_file.is_open());
+    g_stream << g_file.rdbuf();
+    g_file.close();
+    const std::string gs = g_stream.str();
+    const char* g_code = gs.c_str();
+
+    g_shader = glCreateShader(GL_GEOMETRY_SHADER);
+    glShaderSource(g_shader, 1, &g_code, NULL);
+    glCompileShader(g_shader);
+    glGetShaderiv(g_shader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+      glGetShaderInfoLog(g_shader, 512, NULL, info_log);
+      std::cerr << "Couldn't compile the geometry shader: "
+               << info_log
+               << std::endl;
+    }
+  }
+
   // Shader program
   id_ = glCreateProgram();
   glAttachShader(id_, v_shader);
+  if(g_path != nullptr) {
+    glAttachShader(id_, g_shader);
+  }
   glAttachShader(id_, f_shader);
   glLinkProgram(id_);
 
@@ -64,6 +90,8 @@ Shader::Shader(
   }
   glDeleteShader(v_shader);
   glDeleteShader(f_shader);
+  if (g_path != nullptr)
+    glDeleteShader(g_shader);
 }
 
 Shader* Shader::use() {

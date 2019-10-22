@@ -1,3 +1,6 @@
+#ifndef _CONTROLS_LINEAR_H_
+#define _CONTROLS_LINEAR_H_
+
 #include "controls/global.hpp"
 
 namespace controls {
@@ -52,3 +55,6 @@ private:
 };
 
 } // namespace controls
+
+#endif
+

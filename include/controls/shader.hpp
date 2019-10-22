@@ -19,7 +19,7 @@ public:
   unsigned int id_;
 
   Shader() {}
-  Shader(const char* v_path, const char* f_path);
+  Shader(const char* v_path, const char* f_path, const char* g_path=nullptr);
 
   Shader* use();
 

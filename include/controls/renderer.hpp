@@ -19,7 +19,9 @@ public:
  ~Renderer();
 
   void init();
-  void render();
+  void render(Vector3d pos,
+      float size,
+      Vector3d color);
 };
 
 } // namespace controls
