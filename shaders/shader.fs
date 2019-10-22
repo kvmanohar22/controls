@@ -2,11 +2,9 @@
 out vec4 frag_color;
 
 in VS_OUT {
-  vec2 tex;
+  vec3 col;
 } fs_in;
 
-uniform sampler2D image;
-
 void main() {
-  frag_color = texture(image, fs_in.tex);
+  frag_color = vec4(fs_in.col, 1.0);
 }
