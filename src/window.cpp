@@ -63,35 +63,36 @@ bool Window::render() {
   glfwSetErrorCallback([](int error, const char* description) {
     fprintf(stderr, "Error %d: %s\n", error, description);
   });
-  // WindowCallbackHelper::setupScrollCallback(shared_window_, this);
-  // WindowCallbackHelper::setupMouseCallback(shared_window_, this);
+  WindowCallbackHelper::setupScrollCallback(shared_window_, this);
+  WindowCallbackHelper::setupMouseCallback(shared_window_, this);
 
   // projection and view matrices
   glm::mat4 projection = glm::perspective(
     glm::radians(45.0f), static_cast<float>(width_)/static_cast<float>(height_),
     0.1f, 100.0f);
-  glm::mat4 view = glm::lookAt(
-    glm::vec3(0, 0, 100),
-    glm::vec3(0.0f, 0.0f, 0.0f), 
-    glm::vec3(0.0f, 1.0f, 0.0f));
+  glm::mat4 view = camera_->get_view_matrix();
 
-  shader_ = new Shader("../shaders/shader.vs", "../shaders/shader.fs", nullptr);
-  line_shader_ = new Shader("../shaders/shader.vs", "../shaders/shader.fs", "../shaders/line.gs");
+  shader_ = new Shader("../shaders/shader.vs",
+      "../shaders/shader.fs", nullptr);
+  axis_shader_ = new Shader("../shaders/axis_shader.vs",
+      "../shaders/axis_shader.fs", "../shaders/axis_shader.gs");
 
   shader_->use();
   shader_->setmat4("projection", projection);
   shader_->setmat4("view", view);
 
-  line_shader_->use();
-  line_shader_->setmat4("projection", projection);
-  line_shader_->setmat4("view", view);
+  axis_shader_->use();
+  axis_shader_->setmat4("projection", projection);
+  axis_shader_->setmat4("view", view);
 
-  renderer_ = new Renderer(shader_);
-  line_renderer_ = new Renderer(line_shader_);
+  renderer_ = new PointRenderer(shader_);
+  axis_renderer_ = new AxisRenderer(axis_shader_);
 
   glEnable(GL_DEPTH_TEST);
-  glEnable(GL_MULTISAMPLE);
+  glEnable(GL_MULTISAMPLE); // anti-aliasing
+  glEnable(GL_LINE_SMOOTH);
   glEnable(GL_PROGRAM_POINT_SIZE);
+  glLineWidth(5.0f);
 
   // render the points!
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -102,14 +103,15 @@ bool Window::render() {
     view = camera_->get_view_matrix();
 
     // Render the axes
-    line_shader_->use();
-    line_shader_->setmat4("view", view);
-    line_renderer_->render(Vector3d(0, 0, 0), 1.0f, Vector3d(0, 1, 0));
+    axis_shader_->use();
+    axis_shader_->setmat4("view", view);
+    dynamic_cast<AxisRenderer*>(axis_renderer_)->render();
 
     // Render the points
     shader_->use();
     shader_->setmat4("view", view);
-    renderer_->render(controller_->x() , 2.0f, Eigen::Vector3d(1, 1, 1));
+    dynamic_cast<PointRenderer*>(renderer_)->render(
+        controller_->x(), Eigen::Vector3d(1, 1, 1), 2.0f);
 
     glfwSwapBuffers(shared_window_);
     glfwPollEvents();

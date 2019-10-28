@@ -6,6 +6,19 @@
 
 namespace controls {
 
+/* Different types of vertex data */
+enum class VertexDataType {
+  VERTEX,
+  VERTEX_COLOR,
+  VERTEX_COLOR_TEXTURE,
+  VERTEX_COLOR_TEXTURE_NORMAL
+};
+
+/* Abstract Renderer 
+ * 
+ * All classes should derive this and implement init()
+ *
+ * */
 class Renderer {
 public:
   Shader* shader_;
@@ -13,15 +26,40 @@ public:
 
   Renderer(Shader* shader)
     :  shader_(shader)
-  {
-    init();
+  {}
+ ~Renderer() {
+    delete shader_;
   }
- ~Renderer();
+
+  virtual void init() =0;
+};
+
+class PointRenderer : public Renderer {
+public:
+  PointRenderer(Shader* shader)
+    : Renderer(shader)
+  {}
+ ~PointRenderer() {}
 
   void init();
-  void render(Vector3d pos,
-      float size,
-      Vector3d color);
+  void render(Vector3d pos, 
+      Vector3d color,
+      float size);
+
+private:
+  vector<float>  vertex_data_;
+  VertexDataType vertex_data_type_;
+};
+
+class AxisRenderer : public Renderer {
+public:
+  AxisRenderer(Shader* shader)
+    : Renderer(shader)
+  {}
+ ~AxisRenderer() {}
+
+  void init();
+  void render();
 };
 
 } // namespace controls

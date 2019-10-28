@@ -23,7 +23,7 @@ public:
       name_(name),
       controller_(controller)
   {
-    camera_ = new Camera(glm::vec3(0.0f, 0.0f, 100.0f));
+    camera_ = new Camera(glm::vec3(0.0f, 0.0f, 3.0f));
     init();
   }
 
@@ -37,10 +37,15 @@ public:
   size_t      width_;
   size_t      height_;
   std::string name_;
+  
+  // Point shader & renderer
   Shader*     shader_;
   Renderer*   renderer_;
-  Shader*     line_shader_;
-  Renderer*   line_renderer_;
+  
+  // Axis shader & renderer
+  Shader*     axis_shader_;
+  Renderer*   axis_renderer_;
+
   CLTIS*      controller_;
   Camera*     camera_;
 
