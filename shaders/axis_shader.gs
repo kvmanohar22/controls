@@ -29,7 +29,7 @@ void main() {
 
   gl_Position = pt0;
   EmitVertex();  
-  gl_Position = pt0 + 0.5*vec4(normal, 0.0f);
+  gl_Position = pt0 + 2.5f * vec4(normal, 0.0f);
   EmitVertex();
   EndPrimitive();
 }

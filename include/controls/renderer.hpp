@@ -38,7 +38,9 @@ class PointRenderer : public Renderer {
 public:
   PointRenderer(Shader* shader)
     : Renderer(shader)
-  {}
+  {
+    init(); 
+  }
  ~PointRenderer() {}
 
   void init();
@@ -55,7 +57,9 @@ class AxisRenderer : public Renderer {
 public:
   AxisRenderer(Shader* shader)
     : Renderer(shader)
-  {}
+  {
+    init(); 
+  }
  ~AxisRenderer() {}
 
   void init();

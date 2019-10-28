@@ -22,13 +22,6 @@ enum class cam_type {
   MOVING
 };
 
-// default camera values in degrees
-const float YAW         = -90.0f;
-const float PITCH       = 0.0f;
-const float SPEED       = 1.5f;
-const float SENSITIVITY = 0.01f;
-const float ZOOM        = 45.0f;
-
 class Camera {
 public:
   glm::vec3 position;
@@ -45,12 +38,14 @@ public:
   float zoom;
 
   Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 10.0f),
+    glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f), 
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
-    float yaw = YAW, float pitch = PITCH)
-    : front(glm::vec3(0.0f, 0.0f, -1.0f)), 
-      movement_speed(SPEED),
-      mouse_sensitivity(SENSITIVITY),
-      zoom(ZOOM)
+    float yaw = -90.0f, float pitch = 0.0f)
+    : 
+      front(front),
+      movement_speed(2.5f),
+      mouse_sensitivity(0.05f),
+      zoom(45.0f)
   {
     this->world_up = glm::vec3(0.0f, 1.0f, 0.0f);       
     this->position = position;

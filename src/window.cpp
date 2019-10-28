@@ -60,6 +60,7 @@ bool Window::render() {
   }
   glfwMakeContextCurrent(shared_window_);
   glfwSetWindowUserPointer(shared_window_, this);
+  glfwSetInputMode(shared_window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
   glfwSetErrorCallback([](int error, const char* description) {
     fprintf(stderr, "Error %d: %s\n", error, description);
   });
@@ -68,8 +69,13 @@ bool Window::render() {
 
   // projection and view matrices
   glm::mat4 projection = glm::perspective(
+    glm::radians(45.0f), 1.0f,
+    0.1f, 100.0f);
+  /* 
+  glm::mat4 projection = glm::perspective(
     glm::radians(45.0f), static_cast<float>(width_)/static_cast<float>(height_),
     0.1f, 100.0f);
+  */ 
   glm::mat4 view = camera_->get_view_matrix();
 
   shader_ = new Shader("../shaders/shader.vs",
@@ -89,9 +95,9 @@ bool Window::render() {
   axis_renderer_ = new AxisRenderer(axis_shader_);
 
   glEnable(GL_DEPTH_TEST);
-  glEnable(GL_MULTISAMPLE); // anti-aliasing
-  glEnable(GL_LINE_SMOOTH);
-  glEnable(GL_PROGRAM_POINT_SIZE);
+  glEnable(GL_MULTISAMPLE);        // anti-aliasing
+  glEnable(GL_LINE_SMOOTH);        // smooth-out solid lines
+  glEnable(GL_PROGRAM_POINT_SIZE); // enable to change point-size
   glLineWidth(5.0f);
 
   // render the points!
@@ -100,7 +106,7 @@ bool Window::render() {
     process_input(shared_window_);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    view = camera_->get_view_matrix();
+    view = camera_->get_view_matrix(cam_type::MOVING);
 
     // Render the axes
     axis_shader_->use();
@@ -111,7 +117,7 @@ bool Window::render() {
     shader_->use();
     shader_->setmat4("view", view);
     dynamic_cast<PointRenderer*>(renderer_)->render(
-        controller_->x(), Eigen::Vector3d(1, 1, 1), 2.0f);
+        controller_->x(), Eigen::Vector3d(1, 1, 1), 5.0f);
 
     glfwSwapBuffers(shared_window_);
     glfwPollEvents();

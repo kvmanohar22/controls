@@ -14,4 +14,3 @@ void main() {
   gl_Position = projection * view * model * vec4(ipos, 1.0f);
   vs_out.col = icol;
 }
-

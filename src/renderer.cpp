@@ -58,8 +58,8 @@ void AxisRenderer::init() {
     
     // triangle in xy-plane
     0.0f, 0.0f, 0.0f,         0.0f, 0.0f, 1.0f,
-    0.0f, 0.0f, 1.0f,         0.0f, 0.0f, 1.0f,
-    1.0f, 0.0f, 0.0f,         0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 1.0f,         0.0f, 0.0f, 1.0f,
+    0.0f, 1.0f, 0.0f,         0.0f, 0.0f, 1.0f,
   };
 
   unsigned int VBO;

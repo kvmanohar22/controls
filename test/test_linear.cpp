@@ -17,7 +17,7 @@ int main() {
   // initial position
   Eigen::Vector3d x(20, 20, 20);
 
-  controls::CLTIS *linear_controller = new controls::CLTIS(A, x);
+  controls::CLTIS* linear_controller = new controls::CLTIS(A, x);
   linear_controller->summary();
 
   // for rendering
