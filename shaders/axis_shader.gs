@@ -1,6 +1,6 @@
 #version 330 core
 layout (triangles) in;
-layout (line_strip, max_vertices=2) out;
+layout (line_strip, max_vertices=6) out;
 
 in VS_OUT {
   vec3 col;
@@ -18,7 +18,17 @@ vec3 compute_triangle_normal(
   return normalize(cross(a, b));
 }
 
-void main() {
+void render_normal(vec4 pt, vec3 normal) {
+  gl_Position = pt;
+  EmitVertex();
+
+  gl_Position = pt + 2.2f * vec4(normalize(normal), 0.0f);
+  EmitVertex();
+
+  EndPrimitive();
+}
+
+void render_normals_manually() {
   vec4 pt0 = gl_in[0].gl_Position;
   vec4 pt1 = gl_in[1].gl_Position;
   vec4 pt2 = gl_in[2].gl_Position;
@@ -27,10 +37,27 @@ void main() {
 
   gs_out.col = gs_in[0].col;
 
-  gl_Position = pt0;
-  EmitVertex();  
-  gl_Position = pt0 + 2.5f * vec4(normal, 0.0f);
-  EmitVertex();
-  EndPrimitive();
+  render_normal(pt0, normal);
+  render_normal(pt1, normal);
+  render_normal(pt2, normal);
 }
 
+void render_normals_normal_vector() {
+  vec4 pt0 = gl_in[0].gl_Position;
+  vec4 pt1 = gl_in[1].gl_Position;
+  vec4 pt2 = gl_in[2].gl_Position;
+
+  // WARNING: Colors are treated as normals
+  //          When colors are passed, be careful
+  vec3 normal = gs_in[0].col;
+
+  gs_out.col = vec3(1.0f, 0.0f, 0.0f);
+  render_normal(pt0, normal);
+  render_normal(pt1, normal);
+  render_normal(pt2, normal);
+}
+
+void main() {
+  // render_normals_manually();
+  render_normals_normal_vector();
+}

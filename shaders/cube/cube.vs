@@ -12,8 +12,6 @@ out VS_OUT {
 
 void main() {
   gl_Position = projection * view * model * vec4(ipos, 1.0f);
-  // vs_out.col = vec3(1.0f, 0.0f, 0.0f);
   // vs_out.col = icol;
-  mat3 normal_matrix = mat3(transpose(inverse(view * model)));
-  vs_out.col = vec3(projection * vec4(normal_matrix * icol, 0.0f));
+  vs_out.col = vec3(0.0f, 0.0f, 0.0f);
 }

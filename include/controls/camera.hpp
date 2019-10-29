@@ -43,8 +43,8 @@ public:
     float yaw = -90.0f, float pitch = 0.0f)
     : 
       front(front),
-      movement_speed(2.5f),
-      mouse_sensitivity(0.05f),
+      movement_speed(5.5f),
+      mouse_sensitivity(0.1f),
       zoom(45.0f)
   {
     this->world_up = glm::vec3(0.0f, 1.0f, 0.0f);       

@@ -154,27 +154,21 @@ void CubeRenderer::init() {
   glBindVertexArray(0);
 }
 
-void CubeRenderer::render() {
-  // TODO: Better way to initialize model?
-  glm::mat4 model = glm::mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
-  model = glm::scale(model, glm::vec3(2, 2, 2));
-
-  shader_->use();
-  shader_->setmat4("model", model);
-  
-  glBindVertexArray(VAO_);
-  glDrawArrays(GL_TRIANGLES, 0, 6);
-  glBindVertexArray(0);
-}
-
 void CubeRenderer::render(Shader* new_shader) {
   // TODO: Better way to initialize model?
   glm::mat4 model = glm::mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
   model = glm::scale(model, glm::vec3(2, 2, 2));
 
+  // old shader
+  shader_->use();
+  shader_->setmat4("model", model);
+  glBindVertexArray(VAO_);
+  glDrawArrays(GL_TRIANGLES, 0, 6);
+  glBindVertexArray(0);
+
+  // new shader
   new_shader->use();
   new_shader->setmat4("model", model);
-  
   glBindVertexArray(VAO_);
   glDrawArrays(GL_TRIANGLES, 0, 6);
   glBindVertexArray(0);

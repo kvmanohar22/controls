@@ -96,7 +96,7 @@ public:
   static void setupScrollCallback(GLFWwindow* glfw_window, Window* window)
   {
     window_instance = window;
-    glfwSetCursorPosCallback(glfw_window, WindowCallbackHelper::ScrollCallback);
+    glfwSetScrollCallback(glfw_window, WindowCallbackHelper::ScrollCallback);
   }
 
   static void setupMouseCallback(GLFWwindow* glfw_window, Window* window)

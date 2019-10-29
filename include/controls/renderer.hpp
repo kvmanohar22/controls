@@ -76,8 +76,10 @@ public:
  ~CubeRenderer() {}
 
   void init();
-  void render();                   // render the same old cube
-  void render(Shader* new_shader); // render the normals
+
+  // a new shader provided? => render with old + this new
+  // TODO: Could be done in a better way 
+  void render(Shader* new_shader=nullptr);
 };
 
 } // namespace controls
