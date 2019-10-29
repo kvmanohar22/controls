@@ -23,10 +23,9 @@ public:
       name_(name),
       controller_(controller)
   {
-    glm::vec3 position = glm::vec3(10.0f, 5.0f, 10.0f);
+    glm::vec3 position = glm::vec3(30.0f, 20.0f, 33.0f);
     glm::vec3 target   = -position;
     camera_ = new Camera(position, target);
-    // camera_ = new Camera(glm::vec3(10.0f, 10.0f, 10.0f), glm::vec3(-1.0f, -1.0f, -1.0f));
     init();
   }
 

@@ -44,6 +44,22 @@ void PointRenderer::render(Vector3d pos,
   glBindVertexArray(0);
 }
 
+void PointRenderer::render(vector<Vector3d> pos,
+    Vector3d col, float size)
+{
+  glBindVertexArray(VAO_);
+  shader_->use();
+  shader_->setf("size", size);
+  for(size_t i=0; i<pos.size(); ++i) {
+    glm::mat4 model = glm::mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+    model = glm::translate(model, glm::vec3(pos[i].x(), pos[i].y(), pos[i].z()));
+
+    shader_->setmat4("model", model);
+    glDrawArrays(GL_POINTS, 0, 1);
+  }
+  glBindVertexArray(0);
+}
+
 void AxisRenderer::init() {
   float vertices[] = {
     // triangle in yz-plane   // normal
@@ -93,48 +109,42 @@ void AxisRenderer::render() {
 
 void CubeRenderer::init() {
   float vertices[] = {
-    // vertices           // normal vectors
-    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+    // vertices
+      1.0f,  1.0f,  1.0f,
+     -1.0f,  1.0f,  1.0f,
 
-    // -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-    //  0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-    //  0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-    //  0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-    // -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-    // -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+      1.0f,  1.0f,  1.0f,
+      1.0f,  1.0f, -1.0f,
 
-    // -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-    // -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-    // -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-    // -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-    // -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-    // -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+      1.0f,  1.0f,  1.0f,
+      1.0f, -1.0f,  1.0f,
 
-    //  0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-    //  0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-    //  0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-    //  0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-    //  0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-    //  0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+     -1.0f,  1.0f,  1.0f,
+     -1.0f, -1.0f,  1.0f,
 
-    // -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-    //  0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-    //  0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-    //  0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-    // -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-    // -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+     -1.0f,  1.0f,  1.0f,
+     -1.0f,  1.0f, -1.0f,
 
-    // -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-    //  0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-    //  0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-    //  0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-    // -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-    // -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+     -1.0f, -1.0f,  1.0f,
+      1.0f, -1.0f,  1.0f,
+
+     -1.0f, -1.0f,  1.0f,
+     -1.0f, -1.0f, -1.0f,
+
+      1.0f, -1.0f,  1.0f,
+      1.0f, -1.0f, -1.0f,
+
+     -1.0f, -1.0f, -1.0f,
+      1.0f, -1.0f, -1.0f,
+
+      1.0f,  1.0f, -1.0f,
+     -1.0f,  1.0f, -1.0f,
+
+      1.0f,  1.0f, -1.0f,
+      1.0f, -1.0f, -1.0f,
+
+     -1.0f,  1.0f, -1.0f,
+     -1.0f, -1.0f, -1.0f
   };
 
   unsigned int VBO;
@@ -145,34 +155,22 @@ void CubeRenderer::init() {
   glGenVertexArrays(1, &VAO_);
   glBindVertexArray(VAO_);
   glVertexAttribPointer(0, 3,
-      GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0);
+      GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(1, 3,
-      GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3*sizeof(float)));
-  glEnableVertexAttribArray(1);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
 }
 
-void CubeRenderer::render(Shader* new_shader) {
+void CubeRenderer::render() {
   // TODO: Better way to initialize model?
   glm::mat4 model = glm::mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
-  model = glm::scale(model, glm::vec3(2, 2, 2));
+  model = glm::scale(model, glm::vec3(10, 10, 10));
 
-  // old shader
   shader_->use();
   shader_->setmat4("model", model);
   glBindVertexArray(VAO_);
-  glDrawArrays(GL_TRIANGLES, 0, 6);
-  glBindVertexArray(0);
-
-  // new shader
-  new_shader->use();
-  new_shader->setmat4("model", model);
-  glBindVertexArray(VAO_);
-  glDrawArrays(GL_TRIANGLES, 0, 6);
+  glDrawArrays(GL_LINES, 0, 24);
   glBindVertexArray(0);
 }
-
 
 } // namespace controls

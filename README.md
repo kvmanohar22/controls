@@ -7,7 +7,8 @@ Implementation of linear controls as part of **EE60011: Control Theory** course 
 ## TODO
 - [x] 3D rendering using OpenGL
 - [x] Continuous/Discrete Linear Time Invariant Systems
-- [ ] Particle rendering with different initial conditions
+- [x] Particle rendering with different initial conditions
+- [ ] Rendering particles lifetime
 - [ ] Continuous/Discrete Linear Time Variant Systems
 - [ ] Non-linear systems (pendulum/inverted pendulum as simple examples)
 - [ ] MIMO pole placement

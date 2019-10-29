@@ -47,6 +47,9 @@ public:
   void render(Vector3d pos, 
       Vector3d color,
       float size);
+  void render(vector<Vector3d> pos, 
+      Vector3d color,
+      float size);
 
 private:
   vector<float>  vertex_data_;
@@ -79,7 +82,7 @@ public:
 
   // a new shader provided? => render with old + this new
   // TODO: Could be done in a better way 
-  void render(Shader* new_shader=nullptr);
+  void render();
 };
 
 } // namespace controls

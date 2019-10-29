@@ -17,25 +17,26 @@ namespace controls {
 class CLTIS {
 public: 
   CLTIS() {
-    A_ = Eigen::Matrix3d::Identity();
-    x_ = Eigen::Vector3d();
+    A_ = Matrix3d::Identity();
   }
 
-  CLTIS(Eigen::Matrix3d A)
-    : A_(A),
-      x_(Eigen::Vector3d())
+  CLTIS(Matrix3d A)
+    : A_(A)
   {}
 
-  CLTIS(Eigen::Matrix3d A, Eigen::Vector3d x)
+  CLTIS(Matrix3d A, vector<Vector3d> x)
     : A_(A),
       x_(x)
   {}
 
  ~CLTIS() =default;
 
-  Eigen::Vector3d step() {
+  vector<Vector3d> step() {
     t_ += controls::dt;
-    x_ = (A_*t_).exp() * x_;
+    Matrix3d A_exp = (A_*t_).exp();
+    for(size_t i=0; i<x_.size(); ++i) {
+      x_.at(i) = A_exp * x_.at(i);
+    }
     return x_;
   }
 
@@ -44,13 +45,17 @@ public:
     cout << "Eigen values = " << A_.eigenvalues().transpose() << endl;
   }
 
-  inline Eigen::Matrix3d A() { return A_; }
-  inline Eigen::Vector3d x() { return x_; }
-  inline double          t() { return t_; }
+  inline void initialize(vector<Vector3d>& pos) {
+    x_.insert(x_.begin(), pos.begin(), pos.end());
+  }
+
+  inline Matrix3d         A() { return A_; }
+  inline vector<Vector3d> x() { return x_; }
+  inline double           t() { return t_; }
 
 private:
-  Eigen::Matrix3d A_;
-  Eigen::Vector3d x_;
+  Matrix3d A_;
+  vector<Vector3d> x_;
   double t_={0};
 };
 

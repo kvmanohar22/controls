@@ -67,23 +67,19 @@ bool Window::render() {
   WindowCallbackHelper::setupScrollCallback(shared_window_, this);
   WindowCallbackHelper::setupMouseCallback(shared_window_, this);
 
-  // projection and view matrices
-  glm::mat4 projection = glm::perspective(
-    glm::radians(45.0f), 1.0f,
-    0.1f, 100.0f);
-  /* 
+  // projection and view matrices   
   glm::mat4 projection = glm::perspective(
     glm::radians(45.0f), static_cast<float>(width_)/static_cast<float>(height_),
     0.1f, 100.0f);
-  */ 
+   
   glm::mat4 view = camera_->get_view_matrix();
 
   shader_ = new Shader("../shaders/shader.vs",
       "../shaders/shader.fs", nullptr);
   axis_shader_ = new Shader("../shaders/axis_shader.vs",
       "../shaders/axis_shader.fs", "../shaders/axis_shader.gs");
-  cube_shader_ = new Shader("../shaders/cube/cube.vs",
-      "../shaders/cube/cube.fs", nullptr);
+  cube_shader_ = new Shader("../shaders/line/line.vs",
+      "../shaders/line/line.fs", "../shaders/line/line.gs");
 
   // point shader & renderer
   shader_->use();
@@ -107,7 +103,7 @@ bool Window::render() {
   glEnable(GL_MULTISAMPLE);        // anti-aliasing
   glEnable(GL_LINE_SMOOTH);        // smooth-out solid lines
   glEnable(GL_PROGRAM_POINT_SIZE); // enable to change point-size
-  glLineWidth(5.0f);
+  glLineWidth(3.0f);
 
   // render the points!
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -131,9 +127,7 @@ bool Window::render() {
     // Render the cube and it's normals
     cube_shader_->use();
     cube_shader_->setmat4("view", view);
-    axis_shader_->use();
-    axis_shader_->setmat4("view", view);
-    // dynamic_cast<CubeRenderer*>(cube_renderer_)->render(axis_shader_);
+    dynamic_cast<CubeRenderer*>(cube_renderer_)->render();
 
     glfwSwapBuffers(shared_window_);
     glfwPollEvents();
