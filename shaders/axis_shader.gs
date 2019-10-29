@@ -1,8 +1,9 @@
 #version 330 core
 layout (triangles) in;
-layout (line_strip, max_vertices=6) out;
+layout (line_strip, max_vertices=2) out;
 
 in VS_OUT {
+  vec3 normal;
   vec3 col;
 } gs_in[];
 
@@ -48,12 +49,13 @@ void render_normals_normal_vector() {
 
   // WARNING: Colors are treated as normals
   //          When colors are passed, be careful
-  vec3 normal = gs_in[0].col;
+  vec3 normal = gs_in[0].normal;
+  vec3 color = gs_in[0].col;
 
-  gs_out.col = vec3(1.0f, 0.0f, 0.0f);
+  gs_out.col = color;
   render_normal(pt0, normal);
-  render_normal(pt1, normal);
-  render_normal(pt2, normal);
+  // render_normal(pt1, normal);
+  // render_normal(pt2, normal);
 }
 
 void main() {

@@ -46,7 +46,7 @@ void PointRenderer::render(Vector3d pos,
 
 void AxisRenderer::init() {
   float vertices[] = {
-    // triangle in yz-plane   // color
+    // triangle in yz-plane   // normal
     0.0f, 0.0f, 0.0f,         1.0f, 0.0f, 0.0f,
     0.0f, 1.0f, 0.0f,         1.0f, 0.0f, 0.0f,
     0.0f, 0.0f, 1.0f,         1.0f, 0.0f, 0.0f,
@@ -87,7 +87,7 @@ void AxisRenderer::render() {
   shader_->setmat4("model", model);
   
   glBindVertexArray(VAO_);
-  glDrawArrays(GL_TRIANGLES, 0, 3);
+  glDrawArrays(GL_TRIANGLES, 0, 9);
   glBindVertexArray(0);
 }
 

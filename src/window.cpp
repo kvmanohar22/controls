@@ -107,10 +107,10 @@ bool Window::render() {
   glEnable(GL_MULTISAMPLE);        // anti-aliasing
   glEnable(GL_LINE_SMOOTH);        // smooth-out solid lines
   glEnable(GL_PROGRAM_POINT_SIZE); // enable to change point-size
-  // glLineWidth(5.0f);
+  glLineWidth(5.0f);
 
   // render the points!
-  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   while(!glfwWindowShouldClose(shared_window_)) {
     process_input(shared_window_);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -120,20 +120,20 @@ bool Window::render() {
     // Render the axes
     axis_shader_->use();
     axis_shader_->setmat4("view", view);
-    // dynamic_cast<AxisRenderer*>(axis_renderer_)->render();
+    dynamic_cast<AxisRenderer*>(axis_renderer_)->render();
 
     // Render the points
     shader_->use();
     shader_->setmat4("view", view);
-    //dynamic_cast<PointRenderer*>(renderer_)->render(
-    //    controller_->x(), Eigen::Vector3d(0, 1, 0), 5.0f);
+    dynamic_cast<PointRenderer*>(renderer_)->render(
+        controller_->x(), Eigen::Vector3d(0, 1, 0), 5.0f);
 
     // Render the cube and it's normals
     cube_shader_->use();
     cube_shader_->setmat4("view", view);
     axis_shader_->use();
     axis_shader_->setmat4("view", view);
-    dynamic_cast<CubeRenderer*>(cube_renderer_)->render(axis_shader_);
+    // dynamic_cast<CubeRenderer*>(cube_renderer_)->render(axis_shader_);
 
     glfwSwapBuffers(shared_window_);
     glfwPollEvents();
