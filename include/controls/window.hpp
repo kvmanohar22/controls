@@ -44,10 +44,14 @@ public:
   // Point shader & renderer
   Shader*     shader_;
   Renderer*   renderer_;
-  
+ 
   // Axis shader & renderer
   Shader*     axis_shader_;
   Renderer*   axis_renderer_;
+
+  // Cube shader & renderer
+  Shader*     cube_shader_;
+  Renderer*   cube_renderer_;
 
   CLTIS*      controller_;
   Camera*     camera_;

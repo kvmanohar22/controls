@@ -66,6 +66,20 @@ public:
   void render();
 };
 
+class CubeRenderer : public Renderer {
+public:
+  CubeRenderer(Shader* shader)
+    : Renderer(shader)
+  {
+    init(); 
+  }
+ ~CubeRenderer() {}
+
+  void init();
+  void render();                   // render the same old cube
+  void render(Shader* new_shader); // render the normals
+};
+
 } // namespace controls
 
 #endif

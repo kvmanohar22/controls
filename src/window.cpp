@@ -82,17 +82,26 @@ bool Window::render() {
       "../shaders/shader.fs", nullptr);
   axis_shader_ = new Shader("../shaders/axis_shader.vs",
       "../shaders/axis_shader.fs", "../shaders/axis_shader.gs");
+  cube_shader_ = new Shader("../shaders/cube/cube.vs",
+      "../shaders/cube/cube.fs", nullptr);
 
+  // point shader & renderer
   shader_->use();
   shader_->setmat4("projection", projection);
   shader_->setmat4("view", view);
+  renderer_ = new PointRenderer(shader_);
 
+  // axis shader & renderer
   axis_shader_->use();
   axis_shader_->setmat4("projection", projection);
   axis_shader_->setmat4("view", view);
-
-  renderer_ = new PointRenderer(shader_);
   axis_renderer_ = new AxisRenderer(axis_shader_);
+
+  // cube shader & renderer
+  cube_shader_->use();
+  cube_shader_->setmat4("projection", projection);
+  cube_shader_->setmat4("view", view);
+  cube_renderer_ = new CubeRenderer(cube_shader_);
 
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_MULTISAMPLE);        // anti-aliasing
@@ -111,13 +120,21 @@ bool Window::render() {
     // Render the axes
     axis_shader_->use();
     axis_shader_->setmat4("view", view);
-    dynamic_cast<AxisRenderer*>(axis_renderer_)->render();
+    // dynamic_cast<AxisRenderer*>(axis_renderer_)->render();
 
     // Render the points
     shader_->use();
     shader_->setmat4("view", view);
-    dynamic_cast<PointRenderer*>(renderer_)->render(
-        controller_->x(), Eigen::Vector3d(0, 1, 0), 5.0f);
+    //dynamic_cast<PointRenderer*>(renderer_)->render(
+    //    controller_->x(), Eigen::Vector3d(0, 1, 0), 5.0f);
+
+    // Render the cube and it's normals
+    cube_shader_->use();
+    cube_shader_->setmat4("view", view);
+    dynamic_cast<CubeRenderer*>(cube_renderer_)->render();
+    axis_shader_->use();
+    axis_shader_->setmat4("view", view);
+    dynamic_cast<CubeRenderer*>(cube_renderer_)->render(axis_shader_);
 
     glfwSwapBuffers(shared_window_);
     glfwPollEvents();
