@@ -57,6 +57,7 @@ public:
   }
 
   glm::mat4 get_view_matrix(cam_type type=cam_type::STATIC) {
+    cout << glm::to_string(position) << endl; 
     if (type == cam_type::STATIC)
       return glm::lookAt(position, position + front, up);
     else

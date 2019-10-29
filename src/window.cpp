@@ -101,12 +101,12 @@ bool Window::render() {
   glLineWidth(5.0f);
 
   // render the points!
-  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
   while(!glfwWindowShouldClose(shared_window_)) {
     process_input(shared_window_);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    view = camera_->get_view_matrix(cam_type::MOVING);
+    view = camera_->get_view_matrix(cam_type::STATIC);
 
     // Render the axes
     axis_shader_->use();
@@ -117,7 +117,7 @@ bool Window::render() {
     shader_->use();
     shader_->setmat4("view", view);
     dynamic_cast<PointRenderer*>(renderer_)->render(
-        controller_->x(), Eigen::Vector3d(1, 1, 1), 5.0f);
+        controller_->x(), Eigen::Vector3d(0, 1, 0), 5.0f);
 
     glfwSwapBuffers(shared_window_);
     glfwPollEvents();
