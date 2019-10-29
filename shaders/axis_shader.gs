@@ -35,8 +35,7 @@ void render_normals_manually() {
 
   vec3 normal = compute_triangle_normal(pt0, pt1, pt2);
 
-  gs_out.col = gs_in[0].col;
-
+  gs_out.col = vec3(1.0f, 0.0f, 0.0f);
   render_normal(pt0, normal);
   render_normal(pt1, normal);
   render_normal(pt2, normal);
