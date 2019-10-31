@@ -30,7 +30,7 @@ public:
   }
 
   bool init();
-  bool show();
+  void show();
   bool render();
   
   // Window management

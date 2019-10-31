@@ -24,7 +24,6 @@ public:
      life_(1.0f)
   {
     col_ = color(); 
-    cout << "color = " << col_.transpose() << endl;
   }
 
   Particle(Vector3d parent_x)
@@ -63,6 +62,8 @@ public:
 
 // TODO: Why vector of pair? maybe list of pair?
 typedef vector<pair<Particle*, vector<Particle*>>> PARTICLE_TRAIL;
+typedef std::unique_lock<std::mutex> lock_t;
+
 class CLTIS {
 public: 
   CLTIS() {
@@ -79,7 +80,7 @@ public:
     x_.reserve(x.size());
     for(size_t i=0; i<x.size(); ++i) {
       vector<Particle*> initial_particles; 
-      initial_particles.reserve(0x100);
+      initial_particles.reserve(0x10000);
       initial_particles.push_back(new Particle(*x[i])); 
       x_.push_back(make_pair(x[i], initial_particles)); 
     } 
@@ -87,23 +88,34 @@ public:
 
  ~CLTIS() {
     std::for_each(x_.begin(), x_.end(), [&](pair<Particle*, vector<Particle*>>& x_pair) {
-      delete   x_pair.first;
-      for(size_t i=0; i<x_pair.second.size(); ++i)
-        delete x_pair.second[i]; 
+      delete x_pair.first;
+      std::for_each(x_pair.second.begin(), x_pair.second.end(), [&](Particle* p) {
+        delete p;
+      });
     });
+    cout << "So long, and thanks for all the fish!\n";
   }
 
+  /* TODO: Interpolate if the points are far away */
   void update_particles(Particle* parent, vector<Particle*>& particles) {
     const auto prevpos = particles.back()->x_;
     const auto currpos = parent->x_; 
-    
+
     particles.push_back(new Particle(*parent)); 
   }
 
   bool step() {
-    // Has reached the origin, stop updating 
-    if (x_[0].first->x_.norm() < 1e-3)
-      return false; 
+    // Has reached the origin, stop updating
+    size_t k=0;
+    for(size_t i=0; i<x_.size(); ++i, ++k) {
+      if (x_[i].first->x_.norm() > 1e-3) {
+        break;
+      }
+    }
+    if (k == x_.size()) {
+      stop_exec_ = true;
+      return false;
+    }
 
     t_ += controls::dt;
     Matrix3d A_exp = (A_*t_).exp();
@@ -122,10 +134,18 @@ public:
 
   inline Matrix3d       A() { return A_; }
   inline double         t() { return t_; }
-  inline PARTICLE_TRAIL x() { 
+  inline PARTICLE_TRAIL x()
+  { 
     {
-      unique_lock<mutex> lock(x_lock_); 
+      lock_t lock(x_mutex_); 
       return x_; 
+    } 
+  }
+  inline bool stop()
+  {
+    {
+      lock_t lock(stop_mutex_); 
+      return stop_exec_; 
     } 
   }
 
@@ -134,7 +154,9 @@ private:
   PARTICLE_TRAIL x_;
   Vector3d vel_;
   double t_={0};
-  mutex x_lock_;
+  bool stop_exec_={false};
+  std::mutex x_mutex_;
+  std::mutex stop_mutex_;
 };
 
 } // namespace controls

@@ -6,8 +6,9 @@ namespace controls {
 Window* WindowCallbackHelper::window_instance = nullptr;
 
 Window::~Window() {
-  delete camera_;
+  cout << "Render thread stop...\n";
   render_thread_.join();
+  delete camera_;
 }
 
 bool Window::init() {
@@ -29,9 +30,9 @@ bool Window::init() {
   return true;
 }
 
-bool Window::show() {
+void Window::show() {
   render_thread_ = std::thread(&Window::render, this);
-  return true;
+  cout << "Render thread start...\n";
 }
 
 void Window::process_input(GLFWwindow* window) {
@@ -107,7 +108,7 @@ bool Window::render() {
 
   // render the points!
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-  while(!glfwWindowShouldClose(shared_window_)) {
+  while(!glfwWindowShouldClose(shared_window_) && !controller_->stop()) {
     process_input(shared_window_);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

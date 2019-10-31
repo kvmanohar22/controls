@@ -68,18 +68,18 @@ void TestSwarmOfParticles(Eigen::Matrix3d& A) {
 
   delete linear_controller;
 }
-
+*/
 void TestParticlesOnXYPlane(Eigen::Matrix3d& A) {
 
   // initial position
-  vector<Eigen::Vector3d> xs;
+  vector<Particle*> xs;
   xs.reserve(72);
   double R = 12, theta=0, d_theta=30;
   double x, y;
   while (theta < 360) {
     x = R * cos(theta * controls::PI / 180.0);
     y = R * sin(theta * controls::PI / 180.0);
-    xs.push_back(Vector3d(x, y, 0));
+    xs.push_back(new Particle(x, y, 0));
     theta += d_theta;
   }
 
@@ -93,13 +93,17 @@ void TestParticlesOnXYPlane(Eigen::Matrix3d& A) {
 
   while(true) {
     auto t = linear_controller->t();
-    auto x = linear_controller->step();
-    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    if(!linear_controller->step()) {
+      cout << "Reached the final state!\n";
+      break; 
+    } 
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
 
   delete linear_controller;
+  cout << "here\n";
 }
-*/
+
 }
 
 int main() {
@@ -110,7 +114,7 @@ int main() {
   Eigen::Matrix3d A(3,3);
   A << -1, 0, 0, 0, -2, 0, 0, 0, -3;
 
-  // ::TestParticlesOnXYPlane(A);
-  ::TestSingleParticle(A);
+  ::TestParticlesOnXYPlane(A);
+  // ::TestSingleParticle(A);
 }
 
