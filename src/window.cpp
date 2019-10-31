@@ -75,12 +75,12 @@ bool Window::render() {
    
   glm::mat4 view = camera_->get_view_matrix();
 
-  shader_ = new Shader("../shaders/shader.vs",
-      "../shaders/shader.fs", nullptr);
-  axis_shader_ = new Shader("../shaders/axis_shader.vs",
-      "../shaders/axis_shader.fs", "../shaders/axis_shader.gs");
-  cube_shader_ = new Shader("../shaders/line/line.vs",
-      "../shaders/line/line.fs", "../shaders/line/line.gs");
+  shader_ = new Shader("../shaders/shader.vert",
+      "../shaders/shader.frag", nullptr);
+  axis_shader_ = new Shader("../shaders/axis_shader.vert",
+      "../shaders/axis_shader.frag", "../shaders/axis_shader.geom");
+  cube_shader_ = new Shader("../shaders/line/line.vert",
+      "../shaders/line/line.frag", "../shaders/line/line.geom");
 
   // point shader & renderer
   shader_->use();
