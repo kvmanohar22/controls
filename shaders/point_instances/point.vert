@@ -1,7 +1,7 @@
 #version 330 core
 layout (location = 0) in vec3 ipos;
 layout (location = 1) in vec3 icol;
-layout (location = 2) in vec4 ioffset;
+layout (location = 2) in mat2x4 ioffset;
 
 out VS_OUT {
   vec3 col;
@@ -13,7 +13,7 @@ uniform mat4 projection;
 uniform vec3 color;
 
 void main() {
-  vs_out.col = color;
-  gl_Position = projection * view * model * vec4(ipos+ioffset.xyz, 1.0f);
-  gl_PointSize = ioffset.w;
+  vs_out.col = ioffset[1].xyz;
+  gl_Position = projection * view * model * vec4(ipos+ioffset[0].xyz, 1.0f);
+  gl_PointSize = ioffset[0].w;
 }

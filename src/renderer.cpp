@@ -28,45 +28,61 @@ void PointRenderer::init() {
   // instanced buffer for offset *changes dynamically*
   glGenBuffers(1, &instance_VBO_);
   glBindBuffer(GL_ARRAY_BUFFER, instance_VBO_);
-  glBufferData(GL_ARRAY_BUFFER, 4*sizeof(float), NULL, GL_STREAM_DRAW); 
+  glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat2x4), NULL, GL_STREAM_DRAW); 
   glVertexAttribPointer(2, 4,
-      GL_FLOAT, GL_FALSE, 4*sizeof(float), (void*)0);
+      GL_FLOAT, GL_FALSE, 4*sizeof(glm::vec4), (void*)0);
   glEnableVertexAttribArray(2);
+  glVertexAttribPointer(3, 4,
+      GL_FLOAT, GL_FALSE, 4*sizeof(glm::vec4), (void*)(sizeof(glm::vec4)));
+  glEnableVertexAttribArray(3);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glVertexAttribDivisor(2, 1);
+  glVertexAttribDivisor(3, 1);
+  glBindVertexArray(0);
 
   glBindVertexArray(0);
 }
 
-void PointRenderer::resize_buffer(PARTICLE_TRAIL pos) {
+size_t PointRenderer::resize_buffer(PARTICLE_TRAIL pos) {
   size_t n_particles = 0;
   for(size_t i=0; i<pos.size(); ++i)
     n_particles += (pos[i].second.size()+1);
 
-  vector<float> raw_data(n_particles*4, 2.0f);
+  vector<float> raw_data(n_particles*8, 2.0f);
   size_t n_particles_so_far = 0;
   for(size_t p=0; p<pos.size(); ++p) {
     const size_t n_new_particles = pos[p].second.size();
     Particle* parent = pos[p].first;
     list<Particle*> trail = pos[p].second;
 
+    // add position and size data
     raw_data[n_particles_so_far+0] = parent->x_.x();
     raw_data[n_particles_so_far+1] = parent->x_.y();
     raw_data[n_particles_so_far+2] = parent->x_.z();
     raw_data[n_particles_so_far+3] = 5.0f;           // change the size of parent
+    // add color data
+    raw_data[n_particles_so_far+4] = parent->col_.x();
+    raw_data[n_particles_so_far+5] = parent->col_.y();
+    raw_data[n_particles_so_far+6] = parent->col_.z();
+    
     list<Particle*>::iterator itr=trail.begin();
     for(size_t i=1; itr!=trail.end(); ++itr, ++i) {
-      raw_data[n_particles_so_far+i*4+0] = (*itr)->x_.x();
-      raw_data[n_particles_so_far+i*4+1] = (*itr)->x_.y();
-      raw_data[n_particles_so_far+i*4+2] = (*itr)->x_.z();
+      raw_data[n_particles_so_far+i*8+0] = (*itr)->x_.x();
+      raw_data[n_particles_so_far+i*8+1] = (*itr)->x_.y();
+      raw_data[n_particles_so_far+i*8+2] = (*itr)->x_.z();
+      
+      raw_data[n_particles_so_far+i*8+4] = (*itr)->col_.x();
+      raw_data[n_particles_so_far+i*8+5] = (*itr)->col_.y();
+      raw_data[n_particles_so_far+i*8+6] = (*itr)->col_.z();
     }
-    n_particles_so_far += ((n_new_particles+1)*4);
+    n_particles_so_far += ((n_new_particles+1)*8);
   }
   glBindBuffer(GL_ARRAY_BUFFER, instance_VBO_);
   glBufferData(GL_ARRAY_BUFFER,
-      n_particles*4*sizeof(float), raw_data.data(), GL_STREAM_DRAW); 
+      n_particles*sizeof(glm::mat2x4), raw_data.data(), GL_STREAM_DRAW); 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   raw_data.clear(); 
+  return n_particles;
 }
 
 void PointRenderer::render(Vector3d pos,
@@ -84,14 +100,12 @@ void PointRenderer::render(Vector3d pos,
   glBindVertexArray(0);
 }
 
-void PointRenderer::render_instanced_buffer(size_t n_instances,
-    const Vector3d& c)
+void PointRenderer::render_instanced_buffer(size_t n_instances)
 {
   glBindVertexArray(VAO_);
   shader_->use();
   glm::mat4 model = glm::mat4(1.0f);
   shader_->setmat4("model", model);
-  shader_->setvec3("color", glm::vec3(c.x(), c.y(), c.z()));
   glDrawArraysInstanced(GL_POINTS, 0, 1, n_instances);
   glBindVertexArray(0);
 }
@@ -101,7 +115,7 @@ void PointRenderer::render(PARTICLE_TRAIL pos) {
   const size_t n_particles = resize_buffer(pos);
 
   // Render the entire thing in one call
-  render_instanced_buffer(trail.size()+1, parent->col_); 
+  render_instanced_buffer(n_particles); 
 }
 
 void PointRenderer::render(vector<Vector3d> pos,

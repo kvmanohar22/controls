@@ -52,10 +52,10 @@ public:
       Vector3d color,
       float size);
   void render(PARTICLE_TRAIL pos);
-  void render_instanced_buffer(size_t n_instances, const Vector3d& c);
+  void render_instanced_buffer(size_t n_instances);
 
   // recreate the buffer
-  void resize_buffer(PARTICLE_TRAIL pos);
+  size_t resize_buffer(PARTICLE_TRAIL pos);
 
 private:
   vector<float>  vertex_data_;
