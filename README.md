@@ -26,9 +26,10 @@ Implementation of linear controls as part of **EE60011: Control Theory** course 
 - glfw3
 - gl3w
 
-#### Build
+### Build
 
 **Note**: Built in Debug mode, to change to Release, check `CMakeLists.txt`
+
 ```bash
 git clone git@github.com:kvmanohar22/controls.git
 cd controls
@@ -37,7 +38,7 @@ cd build
 cmake ..
 ```
 
-#### Test linear controller
+### Test linear controller
 
 ```bash
 make test_linear
