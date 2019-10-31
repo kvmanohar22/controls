@@ -56,7 +56,7 @@ void PointRenderer::render(PARTICLE_TRAIL pos) {
     render(parent->x_, parent->col_, 3.0f);
 
     // Render the tail of the parent
-    vector<Particle*> trail = pos[i].second;
+    list<Particle*> trail = pos[i].second;
     std::for_each(trail.begin(), trail.end(), [&](Particle* tail) {
       render(tail->x_, tail->col_, 1.0f);
     });

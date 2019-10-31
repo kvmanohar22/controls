@@ -61,7 +61,7 @@ public:
  */
 
 // TODO: Why vector of pair? maybe list of pair?
-typedef vector<pair<Particle*, vector<Particle*>>> PARTICLE_TRAIL;
+typedef vector<pair<Particle*, list<Particle*>>> PARTICLE_TRAIL;
 typedef std::unique_lock<std::mutex> lock_t;
 
 class CLTIS {
@@ -79,15 +79,14 @@ public:
   {
     x_.reserve(x.size());
     for(size_t i=0; i<x.size(); ++i) {
-      vector<Particle*> initial_particles; 
-      initial_particles.reserve(0x10000);
+      list<Particle*> initial_particles; 
       initial_particles.push_back(new Particle(*x[i])); 
       x_.push_back(make_pair(x[i], initial_particles)); 
     } 
   }
 
  ~CLTIS() {
-    std::for_each(x_.begin(), x_.end(), [&](pair<Particle*, vector<Particle*>>& x_pair) {
+    std::for_each(x_.begin(), x_.end(), [&](pair<Particle*, list<Particle*>>& x_pair) {
       delete x_pair.first;
       std::for_each(x_pair.second.begin(), x_pair.second.end(), [&](Particle* p) {
         delete p;
@@ -97,7 +96,7 @@ public:
   }
 
   /* TODO: Interpolate if the points are far away */
-  void update_particles(Particle* parent, vector<Particle*>& particles) {
+  void update_particles(Particle* parent, list<Particle*>& particles) {
     const auto prevpos = particles.back()->x_;
     const auto currpos = parent->x_; 
 
@@ -106,25 +105,29 @@ public:
 
   bool step() {
     // Has reached the origin, stop updating
-    size_t k=0;
-    for(size_t i=0; i<x_.size(); ++i, ++k) {
-      if (x_[i].first->x_.norm() > 1e-3) {
-        break;
-      }
-    }
-    if (k == x_.size()) {
-      stop_exec_ = true;
-      return false;
-    }
+    {
+      lock_t lock(x_mutex_); 
 
-    t_ += controls::dt;
-    Matrix3d A_exp = (A_*t_).exp();
-    vel_ = A_*x_.at(0).first->x_;
-    for(size_t i=0; i<x_.size(); ++i) {
-      x_.at(i).first->x_ = A_exp * x_.at(i).first->x_;
-      update_particles(x_.at(i).first, x_.at(i).second);
+      size_t k=0;
+      for(size_t i=0; i<x_.size(); ++i, ++k) {
+        if (x_[i].first->x_.norm() > 1e-3) {
+          break;
+        }
+      }
+      if (k == x_.size()) {
+        stop_exec_ = true;
+        return false;
+      }
+
+      t_ += controls::dt;
+      Matrix3d A_exp = (A_*t_).exp();
+      vel_ = A_*x_.at(0).first->x_;
+      for(size_t i=0; i<x_.size(); ++i) {
+        x_.at(i).first->x_ = A_exp * x_.at(i).first->x_;
+        update_particles(x_.at(i).first, x_.at(i).second);
+      }
+      return true;
     }
-    return true;
   }
 
   void summary() {
@@ -135,7 +138,7 @@ public:
   inline Matrix3d       A() { return A_; }
   inline double         t() { return t_; }
   inline PARTICLE_TRAIL x()
-  { 
+  {
     {
       lock_t lock(x_mutex_); 
       return x_; 
