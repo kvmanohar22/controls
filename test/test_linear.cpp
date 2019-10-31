@@ -5,6 +5,7 @@
 #include "controls/global.hpp"
 #include "controls/linear_continuous_system.hpp"
 #include "controls/window.hpp"
+#include "controls/utils.hpp"
 
 using namespace controls;
 using namespace std;
@@ -28,8 +29,11 @@ void TestSingleParticle(Eigen::Matrix3d& A) {
 
   while(true) {
     auto t = linear_controller->t();
-    auto x = linear_controller->step();
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    if(!linear_controller->step()) {
+      cout << "Reached the final state!\n";
+      break; 
+    } 
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
 
   delete linear_controller;

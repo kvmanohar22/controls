@@ -37,6 +37,7 @@ void PointRenderer::render(Vector3d pos,
 
   shader_->use();
   shader_->setmat4("model", model);
+  shader_->setvec3("color", glm::vec3(col.x(), col.y(), col.z()));
   shader_->setf("size", size);
   
   glBindVertexArray(VAO_);
@@ -52,12 +53,12 @@ void PointRenderer::render(PARTICLE_TRAIL pos) {
     
     // Render the parent
     const Particle* parent = pos[i].first;
-    render(parent->x_, parent->col_, 10.0f);
+    render(parent->x_, parent->col_, 3.0f);
 
     // Render the tail of the parent
     vector<Particle*> trail = pos[i].second;
     std::for_each(trail.begin(), trail.end(), [&](Particle* tail) {
-      render(tail->x_, tail->col_, 3.0f);
+      render(tail->x_, tail->col_, 1.0f);
     });
   }
   glBindVertexArray(0);
