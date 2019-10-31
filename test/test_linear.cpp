@@ -77,7 +77,7 @@ void TestParticlesOnXYPlane(Eigen::Matrix3d& A) {
   // initial position
   vector<Particle*> xs;
   xs.reserve(72);
-  double R = 12, theta=0, d_theta=30;
+  double R = 12, theta=0, d_theta=10;
   double x, y;
   while (theta < 360) {
     x = R * cos(theta * controls::PI / 180.0);
@@ -117,8 +117,8 @@ int main() {
   A << -1, 0, 0, 0, -2, 0, 0, 0, -3;
   // A << -200, 0, 0, 0, 0, -2, 0, 2, 0;
 
-  // ::TestParticlesOnXYPlane(A);
-  ::TestSingleParticle(A);
+  ::TestParticlesOnXYPlane(A);
+  // ::TestSingleParticle(A);
   // ::TestSwarmOfParticles(A);
 }
 

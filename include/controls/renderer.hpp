@@ -55,8 +55,7 @@ public:
   void render_instanced_buffer(size_t n_instances, const Vector3d& c);
 
   // recreate the buffer
-  void resize_buffer(const Particle* parent,
-      list<Particle*>& new_particles);
+  void resize_buffer(PARTICLE_TRAIL pos);
 
 private:
   vector<float>  vertex_data_;
