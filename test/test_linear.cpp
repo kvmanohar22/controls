@@ -8,14 +8,15 @@
 
 using namespace controls;
 using namespace std;
+using namespace Eigen;
 
 namespace {
 
 void TestSingleParticle(Eigen::Matrix3d& A) {
 
   // initial position
-  Eigen::Vector3d x(12, 12, 12);
-  vector<Eigen::Vector3d> xs;
+  Particle* x = new Particle(12, 12, 12);
+  vector<Particle*> xs;
   xs.push_back(x);
 
   controls::CLTIS* linear_controller = new controls::CLTIS(A, xs);
@@ -33,20 +34,20 @@ void TestSingleParticle(Eigen::Matrix3d& A) {
 
   delete linear_controller;
 }
-
+/*
 void TestSwarmOfParticles(Eigen::Matrix3d& A) {
 
   // initial position
-  vector<Eigen::Vector3d> xs;
+  vector<Particle> xs;
   xs.reserve(8);
-  xs.push_back(Vector3d(-12, -12, -12));
-  xs.push_back(Vector3d(-12, -12,  12));
-  xs.push_back(Vector3d(-12,  12, -12));
-  xs.push_back(Vector3d(-12,  12,  12));
-  xs.push_back(Vector3d( 12, -12, -12));
-  xs.push_back(Vector3d( 12, -12,  12));
-  xs.push_back(Vector3d( 12,  12, -12));
-  xs.push_back(Vector3d( 12,  12,  12));
+  xs.push_back(Particle(-12, -12, -12));
+  xs.push_back(Particle(-12, -12,  12));
+  xs.push_back(Particle(-12,  12, -12));
+  xs.push_back(Particle(-12,  12,  12));
+  xs.push_back(Particle( 12, -12, -12));
+  xs.push_back(Particle( 12, -12,  12));
+  xs.push_back(Particle( 12,  12, -12));
+  xs.push_back(Particle( 12,  12,  12));
 
   controls::CLTIS* linear_controller = new controls::CLTIS(A, xs);
   linear_controller->summary();
@@ -94,16 +95,18 @@ void TestParticlesOnXYPlane(Eigen::Matrix3d& A) {
 
   delete linear_controller;
 }
-
+*/
 }
 
 int main() {
+  srand(static_cast<unsigned> (time(0)));
   // State transfer function
   // Note: All eigenvalues are strictly negative => stable system
   //       So, x(t) -> 0 as t -> inf
   Eigen::Matrix3d A(3,3);
   A << -1, 0, 0, 0, -2, 0, 0, 0, -3;
 
-  ::TestParticlesOnXYPlane(A);
+  // ::TestParticlesOnXYPlane(A);
+  ::TestSingleParticle(A);
 }
 

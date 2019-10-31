@@ -118,11 +118,12 @@ bool Window::render() {
     axis_shader_->setmat4("view", view);
     dynamic_cast<AxisRenderer*>(axis_renderer_)->render();
 
-    // Render the points
+    // Render the points along with the trail
     shader_->use();
     shader_->setmat4("view", view);
+    PARTICLE_TRAIL particles = controller_->x();
     dynamic_cast<PointRenderer*>(renderer_)->render(
-        controller_->x(), Eigen::Vector3d(0, 1, 0), 5.0f);
+        particles);
 
     // Render the cube and it's normals
     cube_shader_->use();

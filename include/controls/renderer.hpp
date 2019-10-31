@@ -3,6 +3,7 @@
 
 #include "controls/global.hpp"
 #include "controls/shader.hpp"
+#include "controls/linear_continuous_system.hpp"
 
 namespace controls {
 
@@ -50,6 +51,7 @@ public:
   void render(vector<Vector3d> pos, 
       Vector3d color,
       float size);
+  void render(PARTICLE_TRAIL pos);
 
 private:
   vector<float>  vertex_data_;

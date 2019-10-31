@@ -43,7 +43,7 @@ public:
     float yaw = -90.0f, float pitch = 0.0f)
     : 
       front(front),
-      movement_speed(5.5f),
+      movement_speed(15.5f),
       mouse_sensitivity(0.1f),
       zoom(45.0f)
   {
