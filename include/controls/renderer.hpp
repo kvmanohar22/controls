@@ -52,10 +52,16 @@ public:
       Vector3d color,
       float size);
   void render(PARTICLE_TRAIL pos);
+  void render_instanced_buffer(size_t n_instances, const Vector3d& c);
+
+  // recreate the buffer
+  void resize_buffer(const Particle* parent,
+      list<Particle*>& new_particles);
 
 private:
   vector<float>  vertex_data_;
   VertexDataType vertex_data_type_;
+  unsigned int   instance_VBO_;
 };
 
 class AxisRenderer : public Renderer {

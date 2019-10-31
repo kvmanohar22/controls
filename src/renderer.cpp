@@ -15,6 +15,7 @@ void PointRenderer::init() {
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+  // normal buffer for position and texture
   glGenVertexArrays(1, &VAO_);
   glBindVertexArray(VAO_);
   glVertexAttribPointer(0, 3,
@@ -24,15 +25,46 @@ void PointRenderer::init() {
       GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3*sizeof(float)));
   glEnableVertexAttribArray(1);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  // instanced buffer [changes dynamically]
+  glGenBuffers(1, &instance_VBO_);
+  glBindBuffer(GL_ARRAY_BUFFER, instance_VBO_);
+  glBufferData(GL_ARRAY_BUFFER, 3*sizeof(float), NULL, GL_STREAM_DRAW); 
+  glVertexAttribPointer(2, 3,
+      GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+  glEnableVertexAttribArray(2);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glVertexAttribDivisor(2, 1);
   glBindVertexArray(0);
 }
 
+void PointRenderer::resize_buffer(const Particle* parent,
+    list<Particle*>& new_particles)
+{
+  const size_t n_particles = new_particles.size();
+  vector<float> raw_data(n_particles*3+3);
+  raw_data[0] = parent->x_.x();
+  raw_data[1] = parent->x_.y();
+  raw_data[2] = parent->x_.z();
+  list<Particle*>::iterator itr=new_particles.begin();
+  for(size_t i=1; itr!=new_particles.end(); ++itr, ++i) {
+    raw_data[i*3+0] = (*itr)->x_.x();
+    raw_data[i*3+1] = (*itr)->x_.y();
+    raw_data[i*3+2] = (*itr)->x_.z();
+  }
+  glBindBuffer(GL_ARRAY_BUFFER, instance_VBO_);
+  glBufferData(GL_ARRAY_BUFFER,
+      (n_particles+1)*3*sizeof(float), raw_data.data(), GL_STREAM_DRAW); 
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  raw_data.clear(); 
+  // TODO: Recreate VAO?
+}
+
 void PointRenderer::render(Vector3d pos,
-    Vector3d col,
-    float size)
+    Vector3d col, float size)
 {
   // TODO: Better way to initialize model?
-  glm::mat4 model = glm::mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+  glm::mat4 model = glm::mat4(1.0f);
   model = glm::translate(model, glm::vec3(pos.x(), pos.y(), pos.z()));
 
   shader_->use();
@@ -45,23 +77,31 @@ void PointRenderer::render(Vector3d pos,
   glBindVertexArray(0);
 }
 
-void PointRenderer::render(PARTICLE_TRAIL pos) {
+void PointRenderer::render_instanced_buffer(size_t n_instances,
+    const Vector3d& c)
+{
+  // TODO: Point sizes to be changed 
   glBindVertexArray(VAO_);
   shader_->use();
-  for(size_t i=0; i<pos.size(); ++i) {
-    glm::mat4 model = glm::mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
-    
-    // Render the parent
-    const Particle* parent = pos[i].first;
-    render(parent->x_, parent->col_, 3.0f);
-
-    // Render the tail of the parent
-    list<Particle*> trail = pos[i].second;
-    std::for_each(trail.begin(), trail.end(), [&](Particle* tail) {
-      render(tail->x_, tail->col_, 1.0f);
-    });
-  }
+  glm::mat4 model = glm::mat4(1.0f);
+  shader_->setmat4("model", model);
+  shader_->setvec3("color", glm::vec3(c.x(), c.y(), c.z()));
+  glDrawArraysInstanced(GL_POINTS, 0, 1, n_instances);
   glBindVertexArray(0);
+}
+
+void PointRenderer::render(PARTICLE_TRAIL pos) {
+  for(size_t i=0; i<pos.size(); ++i) {
+    // Render the parent and it's children
+    const Particle* parent = pos[i].first;
+    list<Particle*> trail = pos[i].second;
+
+    // Resize the buffer to accomodate new particles
+    resize_buffer(parent, trail);
+
+    // Render the entire thing in one call
+    render_instanced_buffer(trail.size()+1, parent->col_); 
+  }
 }
 
 
@@ -72,7 +112,7 @@ void PointRenderer::render(vector<Vector3d> pos,
   shader_->use();
   shader_->setf("size", size);
   for(size_t i=0; i<pos.size(); ++i) {
-    glm::mat4 model = glm::mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+    glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(pos[i].x(), pos[i].y(), pos[i].z()));
 
     shader_->setmat4("model", model);
@@ -118,7 +158,7 @@ void AxisRenderer::init() {
 
 void AxisRenderer::render() {
   // TODO: Better way to initialize model?
-  glm::mat4 model = glm::mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+  glm::mat4 model = glm::mat4(1.0f);
 
   shader_->use();
   shader_->setmat4("model", model);
@@ -184,7 +224,7 @@ void CubeRenderer::init() {
 
 void CubeRenderer::render() {
   // TODO: Better way to initialize model?
-  glm::mat4 model = glm::mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+  glm::mat4 model = glm::mat4(1.0f);
   model = glm::scale(model, glm::vec3(10, 10, 10));
 
   shader_->use();

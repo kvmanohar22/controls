@@ -115,9 +115,10 @@ int main() {
   //       So, x(t) -> 0 as t -> inf
   Eigen::Matrix3d A(3,3);
   A << -1, 0, 0, 0, -2, 0, 0, 0, -3;
+  // A << -200, 0, 0, 0, 0, -2, 0, 2, 0;
 
   // ::TestParticlesOnXYPlane(A);
-  // ::TestSingleParticle(A);
-  ::TestSwarmOfParticles(A);
+  ::TestSingleParticle(A);
+  // ::TestSwarmOfParticles(A);
 }
 
