@@ -1,5 +1,7 @@
 # Linear Controls
 
+:construction: Work in Progress :construction:
+
 Implementation of linear controls as part of **EE60011: Control Theory** course at IIT Kharagpur by [Prof. Sanand](http://www.facweb.iitkgp.ac.in/~sanand/f_sanand.html)
 
 <p align="center"><img width="70%" height="70%" src="imgs/renderer.png"/></p>
@@ -16,3 +18,28 @@ Implementation of linear controls as part of **EE60011: Control Theory** course 
 - [ ] State evolution of controllable/un-controllable observable/un-observable systems
 - [ ] Static/Dynamic output/state feedback systems
 
+## Requirements
+
+- c++14
+- OpenGL 3.3+
+- Eigen3
+- glfw3
+- gl3w
+
+#### Build
+
+**Note**: Built in Debug mode, to change to Release, check `CMakeLists.txt`
+```bash
+git clone git@github.com:kvmanohar22/controls.git
+cd controls
+mkdir build
+cd build
+cmake ..
+```
+
+#### Test linear controller
+
+```bash
+make test_linear
+./test_linear
+```
