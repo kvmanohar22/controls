@@ -104,6 +104,8 @@ bool Window::render() {
   cube_shader_->setmat4("view", view);
   cube_renderer_ = new CubeRenderer(cube_shader_);
 
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_MULTISAMPLE);        // anti-aliasing
   glEnable(GL_LINE_SMOOTH);        // smooth-out solid lines

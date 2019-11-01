@@ -39,8 +39,6 @@ void PointRenderer::init() {
   glVertexAttribDivisor(2, 1);
   glVertexAttribDivisor(3, 1);
   glBindVertexArray(0);
-
-  glBindVertexArray(0);
 }
 
 size_t PointRenderer::resize_buffer(PARTICLE_TRAIL pos) {
@@ -48,40 +46,42 @@ size_t PointRenderer::resize_buffer(PARTICLE_TRAIL pos) {
   for(size_t i=0; i<pos.size(); ++i)
     n_particles += (pos[i].second.size()+1);
 
-  vector<float> raw_data(n_particles*8, 2.0f);
   size_t n_particles_so_far = 0;
+  // std::fill(instance_data_.begin(), instance_data_.end(), 2.0f);
   for(size_t p=0; p<pos.size(); ++p) {
     const size_t n_new_particles = pos[p].second.size();
     Particle* parent = pos[p].first;
     list<Particle*> trail = pos[p].second;
 
     // add position and size data
-    raw_data[n_particles_so_far+0] = parent->x_.x();
-    raw_data[n_particles_so_far+1] = parent->x_.y();
-    raw_data[n_particles_so_far+2] = parent->x_.z();
-    raw_data[n_particles_so_far+3] = 5.0f;           // change the size of parent
+    instance_data_[n_particles_so_far+0] = parent->x_.x();
+    instance_data_[n_particles_so_far+1] = parent->x_.y();
+    instance_data_[n_particles_so_far+2] = parent->x_.z();
+    instance_data_[n_particles_so_far+3] = 5.0f;           // change the size of parent
     // add color data
-    raw_data[n_particles_so_far+4] = parent->col_.x();
-    raw_data[n_particles_so_far+5] = parent->col_.y();
-    raw_data[n_particles_so_far+6] = parent->col_.z();
+    instance_data_[n_particles_so_far+4] = parent->col_.x();
+    instance_data_[n_particles_so_far+5] = parent->col_.y();
+    instance_data_[n_particles_so_far+6] = parent->col_.z();
+    instance_data_[n_particles_so_far+7] = 1.0f;
     
     list<Particle*>::iterator itr=trail.begin();
     for(size_t i=1; itr!=trail.end(); ++itr, ++i) {
-      raw_data[n_particles_so_far+i*8+0] = (*itr)->x_.x();
-      raw_data[n_particles_so_far+i*8+1] = (*itr)->x_.y();
-      raw_data[n_particles_so_far+i*8+2] = (*itr)->x_.z();
-      
-      raw_data[n_particles_so_far+i*8+4] = (*itr)->col_.x();
-      raw_data[n_particles_so_far+i*8+5] = (*itr)->col_.y();
-      raw_data[n_particles_so_far+i*8+6] = (*itr)->col_.z();
+      instance_data_[n_particles_so_far+i*8+0] = (*itr)->x_.x();
+      instance_data_[n_particles_so_far+i*8+1] = (*itr)->x_.y();
+      instance_data_[n_particles_so_far+i*8+2] = (*itr)->x_.z();
+      instance_data_[n_particles_so_far+i*8+3] = 2.0f;
+
+      instance_data_[n_particles_so_far+i*8+4] = (*itr)->col_.x();
+      instance_data_[n_particles_so_far+i*8+5] = (*itr)->col_.y();
+      instance_data_[n_particles_so_far+i*8+6] = (*itr)->col_.z();
+      instance_data_[n_particles_so_far+i*8+7] = (*itr)->life_;
     }
     n_particles_so_far += ((n_new_particles+1)*8);
   }
   glBindBuffer(GL_ARRAY_BUFFER, instance_VBO_);
   glBufferData(GL_ARRAY_BUFFER,
-      n_particles*sizeof(glm::mat2x4), raw_data.data(), GL_STREAM_DRAW); 
+      n_particles*sizeof(glm::mat2x4), instance_data_.data(), GL_STREAM_DRAW); 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-  raw_data.clear(); 
   return n_particles;
 }
 

@@ -2,9 +2,9 @@
 out vec4 frag_color;
 
 in VS_OUT {
-  vec3 col;
+  vec4 col;
 } fs_in;
 
 void main() {
-  frag_color = vec4(fs_in.col, 1.0);
+  frag_color = fs_in.col;
 }

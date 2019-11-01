@@ -2,6 +2,7 @@
 #define _CONTROLS_LINEAR_H_
 
 #include "controls/global.hpp"
+#include "controls/config.hpp"
 #include "controls/utils.hpp"
 #include <mutex>
 
@@ -37,14 +38,7 @@ public:
    : x_(particle.x_),
      col_(particle.col_),
      life_(1.0f)
-  {
-    /* 
-    // randomly initialize the position
-    double r = static_cast<double>(rand()) / static_cast<double>(RAND_MAX);
-    Vector3d random_offset_v(r,r,r);
-    x_ += random_offset_v;
-    */
-  }
+  {}
 
   Vector3d x_;
   Vector3d col_;
@@ -100,7 +94,19 @@ public:
     const auto prevpos = particles.back()->x_;
     const auto currpos = parent->x_; 
 
-    particles.push_back(new Particle(*parent)); 
+    
+    // decrease the life of the particle
+    std::for_each(particles.begin(), particles.end(), [&](Particle* p) {
+      p->life_ *= Config::life_gradient();
+    });
+  
+    // We only maintain certain number of points in the trail
+    if(particles.size() >= Config::n_particles()) {
+      particles.pop_front();
+      particles.push_back(new Particle(*parent)); 
+    } else {
+      particles.push_back(new Particle(*parent)); 
+    }
   }
 
   bool step() {

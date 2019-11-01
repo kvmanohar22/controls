@@ -41,6 +41,8 @@ public:
     : Renderer(shader)
   {
     init(); 
+    instance_data_.resize(0xFFFF000); 
+    std::fill(instance_data_.begin(), instance_data_.end(), 2.0f); 
   }
  ~PointRenderer() {}
 
@@ -61,6 +63,7 @@ private:
   vector<float>  vertex_data_;
   VertexDataType vertex_data_type_;
   unsigned int   instance_VBO_;
+  vector<float>  instance_data_;
 };
 
 class AxisRenderer : public Renderer {
