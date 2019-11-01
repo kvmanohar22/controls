@@ -4,7 +4,9 @@
 
 Implementation of linear controls as part of **EE60011: Control Theory** course at IIT Kharagpur by [Prof. Sanand](http://www.facweb.iitkgp.ac.in/~sanand/f_sanand.html)
 
-<p align="center"><img width="70%" height="70%" src="imgs/renderer.png"/></p>
+<p align="center"><img width="70%" height="70%" src="imgs/renderer_2.png"/></p>
+Rendering of evolution of particles with complex eigenvalues and real part strictly less than 0.
+
 
 ## TODO
 - [x] 3D rendering using OpenGL

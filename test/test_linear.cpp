@@ -77,7 +77,7 @@ void TestParticlesOnXYPlane(Eigen::Matrix3d& A) {
   // initial position
   vector<Particle*> xs;
   xs.reserve(72);
-  double R = 12, theta=0, d_theta=10;
+  double R = 24, theta=0, d_theta=3;
   double x, y;
   while (theta < 360) {
     x = R * cos(theta * controls::PI / 180.0);
@@ -108,14 +108,33 @@ void TestParticlesOnXYPlane(Eigen::Matrix3d& A) {
 
 }
 
+void getA(Matrix3d& A, int type) {
+  switch(type) {
+    case 0: // stable
+      A << -1, 0, 0, 0, -2, 0, 0, 0, -3;
+      break;
+    case 1: // unstable
+      A << -1, 0, 0, 0, -2, 0, 0, 0, 3;
+      break;
+    case 2: // complex eigenvalues with real < 0
+      A << -2, 0, 0, 0, -4, -1, 0, 5, 0;
+      break;
+    case 3: // complex eigenvalues with real = 0
+      A << -2, 0, 0, 0, 0, -2, 0, 2, 0;
+      break;
+    case 4: // complex eigenvalues with real > 0
+      A << -2, 0, 0, 0, 4, -1, 0, 5, 0;
+      break;
+ 
+  }
+}
+
+
 int main() {
   srand(static_cast<unsigned> (time(0)));
-  // State transfer function
-  // Note: All eigenvalues are strictly negative => stable system
-  //       So, x(t) -> 0 as t -> inf
   Eigen::Matrix3d A(3,3);
-  A << -1, 0, 0, 0, -2, 0, 0, 0, -3;
-  // A << -200, 0, 0, 0, 0, -2, 0, 2, 0;
+
+  getA(A, 2);
 
   ::TestParticlesOnXYPlane(A);
   // ::TestSingleParticle(A);
