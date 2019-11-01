@@ -26,11 +26,7 @@ list(APPEND SRCS
   src/renderer.cpp
   src/shader.cpp
   src/window.cpp
-  include/controls/global.hpp
-  include/controls/linear_continuous_system.hpp
-  include/controls/renderer.hpp
-  include/controls/shader.hpp
-  include/controls/window.hpp
+  src/config.cpp
 )
 
 add_library(controls SHARED
