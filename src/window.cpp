@@ -71,7 +71,7 @@ bool Window::render() {
   // projection and view matrices   
   glm::mat4 projection = glm::perspective(
     glm::radians(45.0f), static_cast<float>(width_)/static_cast<float>(height_),
-    0.1f, 100.0f);
+    0.1f, 1000.0f);
    
   glm::mat4 view = camera_->get_view_matrix();
 

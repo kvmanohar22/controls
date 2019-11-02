@@ -42,11 +42,11 @@ public:
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
     float yaw = -90.0f, float pitch = 0.0f)
     : 
-      front(front),
       movement_speed(15.5f),
       mouse_sensitivity(0.1f),
       zoom(45.0f)
   {
+    this->front    = front;
     this->world_up = glm::vec3(0.0f, 1.0f, 0.0f);       
     this->position = position;
     this->up       = up;
