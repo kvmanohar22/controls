@@ -4,8 +4,10 @@
 
 Implementation of linear controls as part of **EE60011: Control Theory** course at IIT Kharagpur by [Prof. Sanand](http://www.facweb.iitkgp.ac.in/~sanand/f_sanand.html)
 
-<p align="center"><img width="70%" height="70%" src="imgs/out1.gif"/></p>
-Rendering of evolution of particles with eigenvalues `-0.43016+2.61428i` `-0.43016,-2.61428i`,`-1.13968`.
+<p align="center"><img width="70%" height="70%" src="imgs/out_converge.gif"/></p>
+Rendering of evolution of particles with eigenvalues (-0.43016,2.61428) (-0.43016,-2.61428),(-1.13968, 0).
+
+More renderings at the [bottom](#more)
 
 
 ## TODO
@@ -46,3 +48,9 @@ cmake ..
 make test_linear
 ./test_linear
 ```
+
+<a name='more'></a>
+### More Renderings
+
+<p align="center"><img width="70%" height="70%" src="imgs/out_diverge.gif"/></p>
+Rendering of evolution of particles with eigenvalues (0.440736,0)  (-1.22037,2.75435) (-1.22037,-2.75435)
