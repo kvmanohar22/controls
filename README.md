@@ -4,8 +4,8 @@
 
 Implementation of linear controls as part of **EE60011: Control Theory** course at IIT Kharagpur by [Prof. Sanand](http://www.facweb.iitkgp.ac.in/~sanand/f_sanand.html)
 
-<p align="center"><img width="70%" height="70%" src="imgs/renderer_2.png"/></p>
-Rendering of evolution of particles with complex eigenvalues and real part strictly less than 0.
+<p align="center"><img width="70%" height="70%" src="imgs/out1.gif"/></p>
+Rendering of evolution of particles with eigenvalues `-0.43016+2.61428i` `-0.43016,-2.61428i`,`-1.13968`.
 
 
 ## TODO
