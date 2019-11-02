@@ -52,8 +52,6 @@ public:
     this->up       = up;
     this->yaw      = yaw;
     this->pitch    = pitch;
-
-    update_camera_vectors();
   }
 
   glm::mat4 get_view_matrix(cam_type type=cam_type::STATIC) {

@@ -12,8 +12,9 @@ find_package(Eigen3 REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
 
+set(PROJECT_HEADERS include)
 include_directories(
-  ./include
+  ${PROJECT_HEADERS}
   ${EIGEN3_INCLUDE_DIRS}
   include/controls/ext
 )
@@ -34,6 +35,7 @@ add_library(controls SHARED
   src/glw3.c
 )
 target_link_libraries(controls ${LIBS})
+target_include_directories(controls PRIVATE ${PROJECT_HEADERS}/controls)
 
 add_executable(test_linear test/test_linear.cpp)
 target_link_libraries(test_linear controls)

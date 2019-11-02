@@ -3,10 +3,10 @@
 namespace controls {
 
 Config::Config() :
-    window_w_(900),
-    window_h_(600),
-    n_particles_(200),
-    life_gradient_(0.99f)
+    window_w_(1200),
+    window_h_(800),
+    n_particles_(300),
+    life_gradient_(0.995f)
   {}
 
 Config& Config::instance() {

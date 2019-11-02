@@ -3,6 +3,7 @@
 
 #include "controls/global.hpp"
 #include "controls/shader.hpp"
+#include "controls/config.hpp"
 #include "controls/linear_continuous_system.hpp"
 
 namespace controls {
@@ -40,8 +41,8 @@ public:
   PointRenderer(Shader* shader)
     : Renderer(shader)
   {
-    init(); 
-    instance_data_.resize(0xFFFF000); 
+    init();
+    instance_data_.resize(0xF0000); 
     std::fill(instance_data_.begin(), instance_data_.end(), 2.0f); 
   }
  ~PointRenderer() {}
