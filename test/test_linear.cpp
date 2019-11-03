@@ -42,7 +42,7 @@ void TestSingleParticle(Eigen::Matrix3d& A) {
 
 void interpolatePoints(vector<Particle*>& particles,
     size_t src_idx, size_t dst_idx, const size_t dim) {
-  const size_t n_intermediates=15;
+  const size_t n_intermediates=10;
   const Particle* src = particles[src_idx]; 
   const Particle* dst = particles[dst_idx]; 
   const float h = std::fabs(dst->x_(dim)-src->x_(dim))/n_intermediates; 
@@ -150,11 +150,8 @@ void getA(Matrix3d& A, int type) {
       break;
     case 3: // complex eigenvalues with real = 0
       // A << -2, 0, 0, 0, 0, -2, 0, 2, 0;
-      // A << 0, -2, 0, 2, 0, -2, 0, 2, -2; // spiral converging
+      A << 0, -2, 0, 2, 0, -2, 0, 2, -2; // spiral converging
       // A << 0, -2, 3, 2, 0, -2, 0, 2, -2; // spiral divergence
-      A << 0, -2, 3,
-           2, 0, -2,
-           0, 2, -2;
       break;
     case 4: // complex eigenvalues with real > 0
       A << -2, 0, 0, 0, 4, -1, 0, 5, 0;
