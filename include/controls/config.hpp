@@ -12,6 +12,7 @@ public:
   static size_t& window_h() { return instance().window_h_; }
   static size_t& n_particles() { return instance().n_particles_; }
   static float&  life_gradient() { return instance().life_gradient_; }
+  static double& dt() { return instance().dt_; }
 
 private:
   Config();
@@ -22,6 +23,7 @@ private:
   size_t window_h_;    // Render window height
   size_t n_particles_; // number of trailing particles
   float life_gradient_; // decrease particle alpha by this factor
+  double dt_;
 };
 
 } // namespace controls

@@ -22,6 +22,7 @@ public:
  
   Particle(double x, double y, double z)
    : x_(Vector3d(x, y, z)),
+     start_x_(x_),
      life_(1.0f)
   {
     col_ = color(); 
@@ -29,6 +30,7 @@ public:
 
   Particle(Vector3d parent_x)
    : x_(parent_x),
+     start_x_(parent_x),
      life_(1.0f)
   {
     col_ = color(); 
@@ -36,11 +38,13 @@ public:
 
   Particle(const Particle& particle)
    : x_(particle.x_),
+     start_x_(particle.x_),
      col_(particle.col_),
      life_(1.0f)
   {}
 
   Vector3d x_;
+  Vector3d start_x_;
   Vector3d col_;
   float life_;
 };
@@ -125,11 +129,11 @@ public:
         return false;
       }
 
-      t_ += controls::dt;
+      t_ += Config::dt();
       Matrix3d A_exp = (A_*t_).exp();
       vel_ = A_*x_.at(0).first->x_;
       for(size_t i=0; i<x_.size(); ++i) {
-        x_.at(i).first->x_ = A_exp * x_.at(i).first->x_;
+        x_.at(i).first->x_ = A_exp * x_.at(i).first->start_x_;
         update_particles(x_.at(i).first, x_.at(i).second);
       }
       return true;

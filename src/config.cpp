@@ -6,7 +6,8 @@ Config::Config() :
     window_w_(1200),
     window_h_(800),
     n_particles_(300),
-    life_gradient_(0.995f)
+    life_gradient_(0.995f),
+    dt_(1e-2)
   {}
 
 Config& Config::instance() {

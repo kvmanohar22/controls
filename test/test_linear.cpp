@@ -101,6 +101,41 @@ void TestSwarmOfParticles(Eigen::Matrix3d& A) {
   delete linear_controller;
 }
 
+void TestParticlesRandom(Eigen::Matrix3d& A) {
+  // initial position
+  size_t n_particles = 200;
+  vector<Particle*> xs;
+  xs.reserve(n_particles);
+  double x, y, z;
+  srand(time(nullptr));
+  for(size_t i=0; i<n_particles; ++i) {
+    x = -24 + rand() % 48;
+    y = -24 + rand() % 48;
+    z = -24 + rand() % 48;
+    xs.push_back(new Particle(x, y, z));
+  }
+
+  cout << "Simulating " << xs.size() << " points\n";
+  controls::CLTIS* linear_controller = new controls::CLTIS(A, xs);
+  linear_controller->summary();
+
+  // for rendering
+  controls::Window window(Config::window_w(), Config::window_h(), "Control Theory", linear_controller); 
+  window.show(); 
+
+  while(true) {
+    auto t = linear_controller->t();
+    if(!linear_controller->step()) {
+      cout << "Reached the final state!\n";
+      break; 
+    } 
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+  }
+
+  delete linear_controller;
+}
+
+
 void TestParticlesOnXYPlane(Eigen::Matrix3d& A) {
 
   // initial position
@@ -141,9 +176,10 @@ void getA(Matrix3d& A, int type) {
   switch(type) {
     case 0: // stable
       A << -1, 0, 0, 0, -2, 0, 0, 0, -3;
+      A << -1, 0, 0, 0, -1, 0, 0, 0, -1;
       break;
     case 1: // unstable
-      A << -1, 0, 0, 0, -2, 0, 0, 0, 3;
+      A << -1, 0, 0, 0, -2, 0, 0, 0, 0.5;
       break;
     case 2: // complex eigenvalues with real < 0
       A << -2, 0, 0, 0, 0, -2, 0, 2, 0;
@@ -169,6 +205,7 @@ int main() {
 
   // ::TestParticlesOnXYPlane(A);
   // ::TestSingleParticle(A);
-  ::TestSwarmOfParticles(A);
+  // ::TestSwarmOfParticles(A);
+  ::TestParticlesRandom(A);
 }
 
