@@ -6,7 +6,7 @@ Implementation of linear controls as part of **EE60011: Control Theory** course 
 
 <div class="fig figcenter fighighlight">
   <img src="imgs/out_converge.gif" width=49% style="margin-right:1px;">
-  <img src="imgs/diverge.gif" width=50%>
+  <img src="imgs/diverge.gif" width=49%>
 </div> 
 
 Rendering of evolution of particles with eigenvalues (-0.43016,2.61428) (-0.43016,-2.61428),(-1.13968, 0) on the left and (0.440736,0)  (-1.22037,2.75435) (-1.22037,-2.75435) on the right.
