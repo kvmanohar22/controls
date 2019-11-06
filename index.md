@@ -1,8 +1,3 @@
----
-layout: post
-title: Linear Controls
----
-
 # Linear Controls
 
 Implementation of linear controls as part of **EE60011: Control Theory** course at IIT Kharagpur by [Prof. Sanand](http://www.facweb.iitkgp.ac.in/~sanand/f_sanand.html)
