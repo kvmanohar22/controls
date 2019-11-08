@@ -7,7 +7,7 @@ Config::Config() :
     window_h_(800),
     n_particles_(300),
     life_gradient_(0.995f),
-    dt_(1e-2)
+    dt_(1e-3)
   {}
 
 Config& Config::instance() {

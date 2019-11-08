@@ -103,15 +103,15 @@ void TestSwarmOfParticles(Eigen::Matrix3d& A) {
 
 void TestParticlesRandom(Eigen::Matrix3d& A) {
   // initial position
-  size_t n_particles = 200;
+  size_t n_particles = 100;
   vector<Particle*> xs;
   xs.reserve(n_particles);
   double x, y, z;
   srand(time(nullptr));
   for(size_t i=0; i<n_particles; ++i) {
-    x = -24 + rand() % 48;
-    y = -24 + rand() % 48;
-    z = -24 + rand() % 48;
+    x = -48 + rand() % 96;
+    y = -48 + rand() % 96;
+    z = -48 + rand() % 96;
     xs.push_back(new Particle(x, y, z));
   }
 
@@ -129,7 +129,7 @@ void TestParticlesRandom(Eigen::Matrix3d& A) {
       cout << "Reached the final state!\n";
       break; 
     } 
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    std::this_thread::sleep_for(std::chrono::nanoseconds(1));
   }
 
   delete linear_controller;
@@ -190,7 +190,7 @@ void getA(Matrix3d& A, int type) {
       // A << 0, -2, 3, 2, 0, -2, 0, 2, -2; // spiral divergence
       break;
     case 4: // complex eigenvalues with real > 0
-      A << -2, 0, 0, 0, 4, -1, 0, 5, 0;
+      A << -0.2, 0, 0, 0, 0.4, -1, 0, 5, 0;
       break;
  
   }
