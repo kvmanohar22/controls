@@ -232,6 +232,8 @@ void CubeRenderer::init() {
   glEnableVertexAttribArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
+  shader_->use();
+  shader_->setvec3("color", glm::vec3(color_.x(), color_.y(), color_.z()));
 }
 
 void CubeRenderer::render() {
@@ -240,6 +242,7 @@ void CubeRenderer::render() {
 
   shader_->use();
   shader_->setmat4("model", model);
+  shader_->setvec3("color", glm::vec3(color_.x(), color_.y(), color_.z()));
   glBindVertexArray(VAO_);
   glDrawArrays(GL_LINES, 0, 24);
   glBindVertexArray(0);

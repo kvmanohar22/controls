@@ -4,6 +4,7 @@
 #include "controls/global.hpp"
 #include "controls/shader.hpp"
 #include "controls/config.hpp"
+#include "controls/utils.hpp"
 #include "controls/linear_continuous_system.hpp"
 
 namespace controls {
@@ -85,6 +86,7 @@ public:
   CubeRenderer(Shader* shader)
     : Renderer(shader)
   {
+    color_ = color();
     init(); 
   }
  ~CubeRenderer() {}
@@ -94,6 +96,9 @@ public:
   // a new shader provided? => render with old + this new
   // TODO: Could be done in a better way 
   void render();
+
+private:
+  Vector3d color_;
 };
 
 } // namespace controls
