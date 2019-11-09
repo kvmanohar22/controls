@@ -1,10 +1,3 @@
----
-layout: post
-title: Linear Controls
-comments: true
-image: "./../images/blog/triangulation_bayesian2.svg"
----
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 
 # Linear Controls
@@ -23,7 +16,7 @@ image: "./../images/blog/triangulation_bayesian2.svg"
 The systems considered are continuous linear time invariant autonomous systems.
 
 $$
-\dot x(t) = Ax(t)
+\frac{d}{dt} x(t) = Ax(t)
 $$
 
 The solution to the above system being,
@@ -37,3 +30,4 @@ $$
 
 ![divergence](imgs/diverge.gif)
 **Fig2:** Rendering of evolution of particles with eigenvalues `(0.440736,0)  (-1.22037,2.75435) (-1.22037,-2.75435)`. Real part of complex eigenvalues is positive and hence the particles shoot to infinity exponentially fast.
+
