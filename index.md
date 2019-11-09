@@ -42,7 +42,7 @@ A =
 \end{bmatrix}
 $$
 
-The above system has eigenvalues `(-2,0), (0,2), (0,-2)`. Because of real part being zero, \\(||x(t)||\\) is bounded.
+The above system has eigenvalues `(-2,0), (0,2), (0,-2)`. Because of real part being zero, \\(\lvert \lvert x(t)\rvert \rvert \\) is bounded.
 
 ![convergence](imgs/marginally_stable.gif)
 **Fig1:** Marginally stable system.
