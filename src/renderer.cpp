@@ -239,7 +239,7 @@ void CubeRenderer::init() {
 
 void CubeRenderer::render() {
   glm::mat4 model = glm::mat4(1.0f);
-  model = glm::scale(model, glm::vec3(10, 10, 10));
+  model = glm::scale(model, glm::vec3(10));
   glLineWidth(9.0f);
 
   shader_->use();
@@ -252,10 +252,10 @@ void CubeRenderer::render() {
 
 void PlaneRenderer::init() {
   size_t n_lines = 50;
-  float x_min = -10;
-  float x_max =  10;
-  float y_min = -10;
-  float y_max =  10;
+  float x_min = -100;
+  float x_max =  100;
+  float y_min = -100;
+  float y_max =  100;
   float dx = (x_max-x_min) / n_lines;
   float dy = (y_max-y_min) / n_lines;
 
@@ -306,6 +306,7 @@ void PlaneRenderer::init() {
 void PlaneRenderer::render() {
   glLineWidth(1.0f);
   shader_->use();
+  shader_->setmat4("model", glm::mat4(1.0f));
   shader_->setvec3("color", glm::vec3(color_.x(), color_.y(), color_.z()));
   glBindVertexArray(VAO_);
   glDrawArrays(GL_LINES, 0, n_lines_);

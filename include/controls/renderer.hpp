@@ -112,7 +112,8 @@ public:
   PlaneRenderer(Shader* shader)
     : Renderer(shader)
   {
-    color_ = Vector3d(1.0, 1.0, 1.0);
+    double g = .411764706;
+    color_ = Vector3d(g,g,g);
     init(); 
   }
  ~PlaneRenderer() {}
