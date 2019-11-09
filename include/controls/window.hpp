@@ -52,6 +52,9 @@ public:
   Shader*     cube_shader_;
   Renderer*   cube_renderer_;
 
+  // Plane shader & renderer
+  Renderer*   plane_renderer_;
+
   CLTIS*      controller_;
   Camera*     camera_;
 

@@ -104,13 +104,16 @@ bool Window::render() {
   cube_shader_->setmat4("view", view);
   cube_renderer_ = new CubeRenderer(cube_shader_);
 
+  // Plane
+  plane_renderer_ = new PlaneRenderer(cube_shader_);
+
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_MULTISAMPLE);        // anti-aliasing
   glEnable(GL_LINE_SMOOTH);        // smooth-out solid lines
   glEnable(GL_PROGRAM_POINT_SIZE); // enable to change point-size
-  glLineWidth(9.0f);
+  glLineWidth(1.0f);
 
   // render the points!
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -130,12 +133,17 @@ bool Window::render() {
     shader_->setmat4("view", view);
     PARTICLE_TRAIL particles = controller_->x();
     dynamic_cast<PointRenderer*>(renderer_)->render(
-        particles);
+       particles);
 
-    // Render the cube and it's normals
+    // Render the cube
     cube_shader_->use();
     cube_shader_->setmat4("view", view);
-    dynamic_cast<CubeRenderer*>(cube_renderer_)->render();
+    // dynamic_cast<CubeRenderer*>(cube_renderer_)->render();
+
+    // Render the plane
+    cube_shader_->use();
+    cube_shader_->setmat4("view", view);
+    dynamic_cast<PlaneRenderer*>(plane_renderer_)->render();
 
     glfwSwapBuffers(shared_window_);
     glfwPollEvents();

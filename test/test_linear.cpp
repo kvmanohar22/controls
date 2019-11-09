@@ -188,8 +188,8 @@ void getA(Matrix3d& A, int type) {
       break;
     case 3: // complex eigenvalues with real = 0
       // A << -2, 0, 0, 0, 0, -2, 0, 2, 0;
-      // A << 0, -2, 0, 2, 0, -2, 0, 2, -2; // spiral converging
-      A << 0, -2, 3, 2, 0, -2, 0, 2, -2; // spiral divergence
+      A << 0, -2, 0, 2, 0, -2, 0, 2, -2; // spiral converging
+      // A << 0, -2, 3, 2, 0, -2, 0, 2, -2; // spiral divergence
       break;
     case 4: // complex eigenvalues with real > 0
       A << -0.2, 0, 0, 0, 0.4, -1, 0, 5, 0;

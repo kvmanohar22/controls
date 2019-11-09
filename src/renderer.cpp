@@ -171,6 +171,7 @@ void AxisRenderer::init() {
 
 void AxisRenderer::render() {
   glm::mat4 model = glm::mat4(1.0f);
+  glLineWidth(9.0f);
 
   shader_->use();
   shader_->setmat4("model", model);
@@ -239,12 +240,75 @@ void CubeRenderer::init() {
 void CubeRenderer::render() {
   glm::mat4 model = glm::mat4(1.0f);
   model = glm::scale(model, glm::vec3(10, 10, 10));
+  glLineWidth(9.0f);
 
   shader_->use();
   shader_->setmat4("model", model);
   shader_->setvec3("color", glm::vec3(color_.x(), color_.y(), color_.z()));
   glBindVertexArray(VAO_);
   glDrawArrays(GL_LINES, 0, 24);
+  glBindVertexArray(0);
+}
+
+void PlaneRenderer::init() {
+  size_t n_lines = 50;
+  float x_min = -10;
+  float x_max =  10;
+  float y_min = -10;
+  float y_max =  10;
+  float dx = (x_max-x_min) / n_lines;
+  float dy = (y_max-y_min) / n_lines;
+
+  vector<float> lines;
+  lines.reserve(2*6*n_lines);
+  // lines parallel to y-axis 
+  for(size_t i=0; i<n_lines; ++i) {
+    float xcurr = x_min + dx * i; 
+    lines.push_back(xcurr); 
+    lines.push_back(0.0f); 
+    lines.push_back(y_min); 
+
+    lines.push_back(xcurr); 
+    lines.push_back(0.0f); 
+    lines.push_back(y_max); 
+  }
+  // lines parallel to x-axis 
+  for(size_t i=0; i<n_lines; ++i) {
+    float ycurr = y_min + dy * i; 
+    lines.push_back(x_min); 
+    lines.push_back(0.0f); 
+    lines.push_back(ycurr); 
+
+    lines.push_back(x_max); 
+    lines.push_back(0.0f); 
+    lines.push_back(ycurr); 
+  }
+  n_lines_ = 2*2*n_lines;
+  
+  unsigned int VBO;
+  glGenBuffers(1, &VBO);
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  glBufferData(GL_ARRAY_BUFFER, lines.size()*sizeof(float), lines.data(), GL_STATIC_DRAW);
+
+  glGenVertexArrays(1, &VAO_);
+  glBindVertexArray(VAO_);
+  glVertexAttribPointer(0, 3,
+      GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);
+  shader_->use();
+  shader_->setvec3("color", glm::vec3(color_.x(), color_.y(), color_.z()));
+  glm::mat4 model = glm::mat4(1.0f);
+  shader_->setmat4("model", model);
+}
+
+void PlaneRenderer::render() {
+  glLineWidth(1.0f);
+  shader_->use();
+  shader_->setvec3("color", glm::vec3(color_.x(), color_.y(), color_.z()));
+  glBindVertexArray(VAO_);
+  glDrawArrays(GL_LINES, 0, n_lines_);
   glBindVertexArray(0);
 }
 

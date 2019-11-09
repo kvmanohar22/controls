@@ -101,6 +101,30 @@ private:
   Vector3d color_;
 };
 
+enum class PlaneType {
+  XY,
+  YZ,
+  XZ
+};
+
+class PlaneRenderer : public Renderer {
+public:
+  PlaneRenderer(Shader* shader)
+    : Renderer(shader)
+  {
+    color_ = Vector3d(1.0, 1.0, 1.0);
+    init(); 
+  }
+ ~PlaneRenderer() {}
+
+  void init();
+  void render();
+
+private:
+  Vector3d color_;
+  size_t n_lines_;
+};
+
 } // namespace controls
 
 #endif
