@@ -57,4 +57,4 @@ make test_siso
 ./test_siso
 ```
 
-For more details checkout [kvmanohar22.github.io/controls](kvmanohar22.github.io/controls)
+For more details checkout [https://kvmanohar22.github.io/controls](https://kvmanohar22.github.io/controls)

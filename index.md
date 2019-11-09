@@ -1,3 +1,7 @@
+---
+title: Linear Controls
+---
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 
 # Linear Controls
@@ -13,6 +17,7 @@
   - [Non-stabilizable](#non_stabilizable)
 
 <a name='linear'></a>
+## Linear Systems
 The systems considered are continuous linear time invariant autonomous systems.
 
 $$
