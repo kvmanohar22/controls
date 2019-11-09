@@ -15,19 +15,21 @@ Implementation of linear controls as part of **EE60011: Control Theory** course 
 - [x] Particle rendering with different initial conditions
 - [x] Rendering particles lifetime
 - [x] Efficient rendering of particles [**use instance buffers**]
-- [ ] Continuous/Discrete Linear Time Variant Systems
 - [ ] Non-linear systems (pendulum/inverted pendulum as simple examples)
+- [x] SISO pole placement
 - [ ] MIMO pole placement
 - [ ] State evolution of controllable/un-controllable observable/un-observable systems
 - [ ] Static/Dynamic output/state feedback systems
 
 ## Requirements
 
-- c++14
+- C++14
 - OpenGL 3.3+
 - Eigen3
 - glfw3
 - gl3w
+
+## Usage
 
 ### Build
 
@@ -42,8 +44,15 @@ cmake ..
 ```
 
 ### Test linear controller
-
 ```bash
+cd /path/to/build
 make test_linear
 ./test_linear
+```
+
+### Test SISO pole placement
+```bash
+cd /path/to/build
+make test_siso
+./test_siso
 ```

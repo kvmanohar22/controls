@@ -40,3 +40,6 @@ target_include_directories(controls PRIVATE ${PROJECT_HEADERS}/controls)
 add_executable(test_linear test/test_linear.cpp)
 target_link_libraries(test_linear controls)
 
+add_executable(test_siso test/test_siso.cpp)
+target_link_libraries(test_siso controls)
+
