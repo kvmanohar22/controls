@@ -30,7 +30,7 @@ $$
 x(t) = e^{At}x(t_0)
 $$
 
-In what follows, I present systems with different initial conditions $x(t_0)$ for various eigenvalues.
+In what follows, I present systems with different initial conditions i.e, \\(x(t_0)\\) for various eigenvalues.
 
 ### Marginally stable system
 $$
@@ -42,7 +42,7 @@ A =
 \end{bmatrix}
 $$
 
-The above system has eigenvalues `(-2,0), (0,2), (0,-2)`. Because of real part being zero, $ ||x(t)||$ is bounded.
+The above system has eigenvalues `(-2,0), (0,2), (0,-2)`. Because of real part being zero, \\(||x(t)||\\) is bounded.
 
 ![convergence](imgs/marginally_stable.gif)
 **Fig1:** Marginally stable system.
