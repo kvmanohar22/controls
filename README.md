@@ -56,3 +56,5 @@ cd /path/to/build
 make test_siso
 ./test_siso
 ```
+
+For more details checkout [kvmanohar22.github.io/controls](kvmanohar22.github.io/controls)
