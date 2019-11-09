@@ -30,9 +30,26 @@ $$
 x(t) = e^{At}x(t_0)
 $$
 
+In what follows, I present systems with different initial conditions $x(t_0)$ for various eigenvalues.
+
+### Marginally stable system
+$$
+A = 
+\begin{bmatrix}
+  -2 & 0 & 0 \\ 
+   0 & 0 & -2 \\ 
+   0 & 2 & 0 \\ 
+\end{bmatrix}
+$$
+
+The above system has eigenvalues `(-2,0), (0,2), (0,-2)`. Because of real part being zero, $ ||x(t)||$ is bounded.
+
+![convergence](imgs/marginally_stable.gif)
+**Fig1:** Marginally stable system.
+
 ![convergence](imgs/out_converge.gif)
-**Fig1:** Rendering of evolution of particles with eigenvalues `(-0.43016,2.61428) (-0.43016,-2.61428),(-1.13968, 0)`. Real part of complex eigenvalues is strictly less than zero and hence (exponentially) stable.
+**Fig2:** Rendering of evolution of particles with eigenvalues `(-0.43016,2.61428) (-0.43016,-2.61428),(-1.13968, 0)`. Real part of complex eigenvalues is strictly less than zero and hence (exponentially) stable.
 
 ![divergence](imgs/diverge.gif)
-**Fig2:** Rendering of evolution of particles with eigenvalues `(0.440736,0)  (-1.22037,2.75435) (-1.22037,-2.75435)`. Real part of complex eigenvalues is positive and hence the particles shoot to infinity exponentially fast.
+**Fig3:** Rendering of evolution of particles with eigenvalues `(0.440736,0)  (-1.22037,2.75435) (-1.22037,-2.75435)`. Real part of complex eigenvalues is positive and hence the particles shoot to infinity exponentially fast.
 
