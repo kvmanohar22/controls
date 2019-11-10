@@ -109,3 +109,15 @@ The above system has eigenvalues `(-0.2,0)  (0.2,2.22711) (0.2,-2.22711) `.
 
 ![convergence](imgs/unstable_pos2.gif)
 **Fig4:** Unstable system
+
+<br><br>
+<div id="disqus_thread"></div>
+<script>
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://kvmanohar22-github-io.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
