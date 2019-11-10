@@ -59,6 +59,7 @@ cd /path/to/build
 make test_linear
 ./test_linear
 ```
+Use `W S A D` keys to move the camera and mouse to change yaw and pitch angles.
 
 ### Test SISO pole placement
 ```bash
