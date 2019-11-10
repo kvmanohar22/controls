@@ -8,13 +8,11 @@ title: Linear Controls
 
 ## Contents
 - [Linear systems](#linear)
-  - [Complex eigenvalues with zero real part](#lin_zero)
-  - [Complex eigenvalues with positive real part](#lin_pos)
-  - [Complex eigenvalues with negative real part](#lin_neg)
-- [Controllable systems](#controllable)
-- [Uncontrollable systems](#uncontrollable)
-  - [Stabilizable](#stabilizable)
-  - [Non-stabilizable](#non_stabilizable)
+  - [Asymptotically stable system](#asymp)
+  - [Unstable System](#unstable)
+  - [Marginally Stable System](#marginal)
+  - [Stable system (with negative real part complex eigenvalues)](#stable_neg)
+  - [Stable system (with negative real part complex eigenvalues)](#unstable_pos)
 
 <a name='linear'></a>
 ## Linear Systems
@@ -32,6 +30,7 @@ $$
 
 In what follows, I present systems with different initial conditions i.e, \\(x(t_0)\\) for various eigenvalues.
 
+<a name='asymp'></a>
 ### Asymptotically stable system
 $$
 A = 
@@ -47,6 +46,7 @@ The above system has eigenvalues `(-0.5,0), (-2,0), (-3,0)`.
 ![unstable](imgs/stable.gif)
 **Fig0:** Stable system.
 
+<a name='unstable'></a>
 ### Unstable system
 $$
 A = 
@@ -62,6 +62,7 @@ The above system has eigenvalues `(-1,0), (-2,0), (0.5,0)`. Because of positivit
 ![unstable](imgs/unstable.gif)
 **Fig1:** Unstable system.
 
+<a name='marginal'></a>
 ### Marginally stable system
 $$
 A = 
@@ -77,6 +78,7 @@ The above system has eigenvalues `(-2,0), (0,2), (0,-2)`. Because of real part b
 ![convergence](imgs/marginally_stable.gif)
 **Fig2:** Marginally stable system.
 
+<a name='stable_neg'></a>
 ### Stable system (with negative real part complex eigenvalues)
 $$
 A = 
@@ -92,6 +94,7 @@ The above system has eigenvalues `(-0.43016,2.61428) (-0.43016,-2.61428) (-1.139
 ![convergence](imgs/stable_neg.gif)
 **Fig3:** Stable system
 
+<a name='unstable_pos'></a>
 ### Unstable system (with positive real part complex eigenvalues)
 $$
 A = 
@@ -106,4 +109,3 @@ The above system has eigenvalues `(-0.2,0)  (0.2,2.22711) (0.2,-2.22711) `.
 
 ![convergence](imgs/unstable_pos2.gif)
 **Fig4:** Unstable system
-
