@@ -32,6 +32,36 @@ $$
 
 In what follows, I present systems with different initial conditions i.e, \\(x(t_0)\\) for various eigenvalues.
 
+### Asymptotically stable system
+$$
+A = 
+\begin{bmatrix}
+  -.5 & 0 & 0 \\ 
+   0 & -2 & 0 \\ 
+   0 & 0 & -3 \\ 
+\end{bmatrix}
+$$
+
+The above system has eigenvalues `(-0.5,0), (-2,0), (-3,0)`.
+
+![unstable](imgs/stable.gif)
+**Fig0:** Stable system.
+
+### Unstable system
+$$
+A = 
+\begin{bmatrix}
+  -1 & 0 & 0 \\ 
+   0 & -2 & 1 \\ 
+   0 & 0 & 0.5 \\ 
+\end{bmatrix}
+$$
+
+The above system has eigenvalues `(-1,0), (-2,0), (0.5,0)`. Because of positivity of third eigenvalue, all the particles shoot to infinity exponentially fast.
+
+![unstable](imgs/unstable.gif)
+**Fig1:** Unstable system.
+
 ### Marginally stable system
 $$
 A = 
@@ -42,14 +72,38 @@ A =
 \end{bmatrix}
 $$
 
-The above system has eigenvalues `(-2,0), (0,2), (0,-2)`. Because of real part being zero, \\(\lvert \lvert x(t)\rvert \rvert \\) is bounded.
+The above system has eigenvalues `(-2,0), (0,2), (0,-2)`. Because of real part being zero for third eigenvalue, \\(\lvert \lvert x(t)\rvert \rvert \\) is bounded but the system is not asymptotically stable.
 
 ![convergence](imgs/marginally_stable.gif)
-**Fig1:** Marginally stable system.
+**Fig2:** Marginally stable system.
 
-![convergence](imgs/out_converge.gif)
-**Fig2:** Rendering of evolution of particles with eigenvalues `(-0.43016,2.61428) (-0.43016,-2.61428),(-1.13968, 0)`. Real part of complex eigenvalues is strictly less than zero and hence (exponentially) stable.
+### Stable system (with negative real part complex eigenvalues)
+$$
+A = 
+\begin{bmatrix}
+  0 & -2 & 0 \\ 
+   2 & 0 & -2 \\ 
+   0 & 2 & -2 \\ 
+\end{bmatrix}
+$$
 
-![divergence](imgs/diverge.gif)
-**Fig3:** Rendering of evolution of particles with eigenvalues `(0.440736,0)  (-1.22037,2.75435) (-1.22037,-2.75435)`. Real part of complex eigenvalues is positive and hence the particles shoot to infinity exponentially fast.
+The above system has eigenvalues `(-0.43016,2.61428) (-0.43016,-2.61428) (-1.13968,0)`. 
+
+![convergence](imgs/stable_neg.gif)
+**Fig3:** Stable system
+
+### Unstable system (with positive real part complex eigenvalues)
+$$
+A = 
+\begin{bmatrix}
+  0 & -2 & 3 \\ 
+   2 & 0 & -2 \\ 
+   0 & 2 & -2 \\ 
+\end{bmatrix}
+$$
+
+The above system has eigenvalues `(-0.2,0)  (0.2,2.22711) (0.2,-2.22711) `.
+
+![convergence](imgs/unstable_pos2.gif)
+**Fig4:** Unstable system
 

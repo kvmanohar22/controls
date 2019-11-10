@@ -103,7 +103,7 @@ void TestSwarmOfParticles(Eigen::Matrix3d& A) {
 
 void TestParticlesRandom(Eigen::Matrix3d& A) {
   // initial position
-  size_t n_particles = 200;
+  size_t n_particles = 150;
   vector<Particle*> xs;
   xs.reserve(n_particles);
   double x, y, z;
@@ -137,9 +137,68 @@ void TestParticlesRandom(Eigen::Matrix3d& A) {
   delete linear_controller;
 }
 
+void TestParticlesOnXZPlane(Matrix3d& A) {
+  vector<Vector3d> pts = controls::regularXZ(15, -40, 40);
+  vector<Particle*> xs;
+  xs.reserve(pts.size());
+  std::for_each(pts.begin(), pts.end(), [&](Vector3d& xyz) {
+    xs.push_back(new Particle(xyz));
+  });
 
+  cout << "Simulating " << xs.size() << " points\n";
+  controls::CLTIS* linear_controller = new controls::CLTIS(A, xs);
+  linear_controller->summary();
+
+  // for rendering
+  controls::Window window(Config::window_w(), Config::window_h(), "Control Theory", linear_controller); 
+  window.show(); 
+
+  while(true) {
+    auto t = linear_controller->t();
+    if(!linear_controller->step()) {
+      cout << "Reached the final state!\n";
+      break; 
+    } 
+    std::this_thread::sleep_for(std::chrono::nanoseconds(1));
+  }
+
+  delete linear_controller;
+
+}
+
+void TestParticlesOnXZPlaneCircle(Eigen::Matrix3d& A) {
+  // initial position
+  vector<Particle*> xs;
+  xs.reserve(72);
+  double R = 12, theta=0, d_theta=1;
+  double x, z;
+  while (theta < 360) {
+    x = R * cos(theta * controls::PI / 180.0);
+    z = R * sin(theta * controls::PI / 180.0);
+    xs.push_back(new Particle(x, 0, z));
+    theta += d_theta;
+  }
+
+  cout << "Simulating " << xs.size() << " points\n";
+  controls::CLTIS* linear_controller = new controls::CLTIS(A, xs);
+  linear_controller->summary();
+
+  // for rendering
+  controls::Window window(Config::window_w(), Config::window_h(), "Control Theory", linear_controller); 
+  window.show(); 
+
+  while(true) {
+    auto t = linear_controller->t();
+    if(!linear_controller->step()) {
+      cout << "Reached the final state!\n";
+      break; 
+    } 
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+  }
+
+  delete linear_controller;
+}
 void TestParticlesOnXYPlane(Eigen::Matrix3d& A) {
-
   // initial position
   vector<Particle*> xs;
   xs.reserve(72);
@@ -177,37 +236,60 @@ void TestParticlesOnXYPlane(Eigen::Matrix3d& A) {
 void getA(Matrix3d& A, int type) {
   switch(type) {
     case 0: // stable
-      A << -1, 0, 0, 0, -2, 0, 0, 0, -3;
-      A << -1, 0, 0, 0, -1, 0, 0, 0, -1;
+      A << -.5, 0, 0, 0, -2, 0, 0, 0, -3;
       break;
     case 1: // unstable
       A << -1, 0, 0, 0, -2, 0, 0, 0, 0.5;
       break;
-    case 2: // complex eigenvalues with real < 0
+    case 2: // marginally stable
       A << -2, 0, 0, 0, 0, -2, 0, 2, 0;
       break;
-    case 3: // complex eigenvalues with real = 0
-      // A << -2, 0, 0, 0, 0, -2, 0, 2, 0;
-      A << 0, -2, 0, 2, 0, -2, 0, 2, -2; // spiral converging
-      // A << 0, -2, 3, 2, 0, -2, 0, 2, -2; // spiral divergence
+    case 3: // stable (complex with negative real part)
+      A << 0, -2, 0, 2, 0, -2, 0, 2, -2;
       break;
-    case 4: // complex eigenvalues with real > 0
+    case 4: // unstable (complex with positive real part)
       A << -0.2, 0, 0, 0, 0.4, -1, 0, 5, 0;
       break;
- 
   }
 }
 
+// stable
+void test0() {
+  Eigen::Matrix3d A(3,3);
+  getA(A, 0);
+  ::TestParticlesOnXZPlane(A);
+}
+
+// unstable
+void test1() {
+  Eigen::Matrix3d A(3,3);
+  getA(A, 1);
+  ::TestParticlesRandom(A);
+}
+
+// marginally stable
+void test2() {
+  Eigen::Matrix3d A(3,3);
+  getA(A, 2);
+  ::TestParticlesRandom(A);
+}
+
+// stable (complex with negative real part)
+void test3() {
+  Eigen::Matrix3d A(3,3);
+  getA(A, 3);
+  ::TestParticlesRandom(A);
+}
+// unstable (complex with positive real part)
+void test4() {
+  Eigen::Matrix3d A(3,3);
+  getA(A, 4);
+  ::TestParticlesRandom(A);
+}
 
 int main() {
   srand(static_cast<unsigned> (time(0)));
-  Eigen::Matrix3d A(3,3);
+  test2();
+} 
 
-  getA(A, 3);
-
-  // ::TestParticlesOnXYPlane(A);
-  // ::TestSingleParticle(A);
-  // ::TestSwarmOfParticles(A);
-  ::TestParticlesRandom(A);
-}
 

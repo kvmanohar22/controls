@@ -138,7 +138,7 @@ bool Window::render() {
     // Render the cube
     cube_shader_->use();
     cube_shader_->setmat4("view", view);
-    dynamic_cast<CubeRenderer*>(cube_renderer_)->render();
+    // dynamic_cast<CubeRenderer*>(cube_renderer_)->render();
 
     // Render the plane
     cube_shader_->use();

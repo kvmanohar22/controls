@@ -25,6 +25,21 @@ inline Vector3d color() {
   return rgb;
 }
 
+// Samples points regularly on a 2D grid on XZ plane
+inline vector<Vector3d> regularXZ(size_t n_points, float pmin, float pmax) {
+  vector<Vector3d> pts;
+  pts.reserve(n_points*n_points); 
+  float dx = (pmax-pmin)/n_points;
+  for(size_t i=0; i<n_points; ++i) {
+    float xcurr = pmin+dx*i; 
+    for(size_t j=0; j<n_points; ++j) {
+      float zcurr = pmin+dx*j;
+      Vector3d pt(xcurr, 0.0, zcurr);
+      pts.push_back(pt);
+    }
+  }
+  return pts;
+}
 
 } // namespace controls
 
