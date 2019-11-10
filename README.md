@@ -3,11 +3,11 @@
 Implementation of linear controls as part of **EE60011: Control Theory** course at IIT Kharagpur by [Prof. Sanand](http://www.facweb.iitkgp.ac.in/~sanand/f_sanand.html)
 
 <div class="fig figcenter fighighlight">
-  <img src="imgs/out_converge.gif" width=49% style="margin-right:1px;">
-  <img src="imgs/diverge.gif" width=49%>
+  <img src="imgs/marginally_stable.gif" width=49% style="margin-right:1px;">
+  <img src="imgs/stable_neg.gif" width=49%>
 </div> 
 
-**Fig1:** Rendering of evolution of particles with eigenvalues `(-0.43016,2.61428) (-0.43016,-2.61428),(-1.13968, 0)` on the left and `(0.440736,0)  (-1.22037,2.75435) (-1.22037,-2.75435)` on the right. Note that, for the rendering on the left, real part of complex eigenvalues is strictly less than zero and hence (exponentially) stable but for the ones on the right, real part of complex eigenvalues is positive and hence the particles shoot to infinity exponentially fast.
+**Fig1:** **Left**: Marginally stable system. **Right**: Exponentially stable system.
 
 ## TODO
 - [x] 3D rendering using OpenGL
@@ -18,18 +18,28 @@ Implementation of linear controls as part of **EE60011: Control Theory** course 
 - [ ] Non-linear systems (pendulum/inverted pendulum as simple examples)
 - [x] SISO pole placement
 - [ ] MIMO pole placement
-- [ ] State evolution of controllable/un-controllable observable/un-observable systems
-- [ ] Static/Dynamic output/state feedback systems
 
 ## Requirements
 
-- C++14
+- cmake 3.3+
+- C++14 (g++-5.4.0)
 - OpenGL 3.3+
 - Eigen3
-- glfw3
 - gl3w
 
 ## Usage
+
+1. After cloning the repository, you need to add the dependencies. Specifically `gl3w` files. Checkout [this](https://github.com/skaslev/gl3w) on how to generate `gl3w.h` `glcorearb.h` and `gl3w.c` files. Place the headers under `include/controls/ext/gl3w` directory. Structure should look something like:
+
+```
+include/
+  controls/
+    ext/
+      gl3w/
+        - gl3w.h
+        - glcorearb.h
+```
+... and place `gl3w.c` under `src/`.
 
 ### Build
 
