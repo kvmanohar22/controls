@@ -171,7 +171,7 @@ void AxisRenderer::init() {
 
 void AxisRenderer::render() {
   glm::mat4 model = glm::mat4(1.0f);
-  glLineWidth(9.0f);
+  glLineWidth(3.0f);
 
   shader_->use();
   shader_->setmat4("model", model);

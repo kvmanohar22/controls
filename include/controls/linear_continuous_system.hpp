@@ -77,7 +77,7 @@ public:
   {
     x_.reserve(x.size());
     for(size_t i=0; i<x.size(); ++i) {
-      list<Particle*> initial_particles; 
+      list<Particle*> initial_particles;
       initial_particles.push_back(new Particle(*x[i])); 
       x_.push_back(make_pair(x[i], initial_particles)); 
     } 

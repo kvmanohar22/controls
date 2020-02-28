@@ -6,6 +6,7 @@
 #include "controls/renderer.hpp"
 #include "controls/shader.hpp"
 #include "controls/linear_continuous_system.hpp"
+#include "controls/non_holonomic_integrator.hpp"
 
 #include <iostream>
 #include <thread>
@@ -17,7 +18,7 @@ class Window {
 public:
   Window() =default;
  ~Window();
-  explicit Window(size_t width, size_t height, std::string name, CLTIS* controller)
+  explicit Window(size_t width, size_t height, std::string name, NonHolonomicIntegrator* controller)
     : width_(width),
       height_(height),
       name_(name),
@@ -55,7 +56,7 @@ public:
   // Plane shader & renderer
   Renderer*   plane_renderer_;
 
-  CLTIS*      controller_;
+  NonHolonomicIntegrator*      controller_;
   Camera*     camera_;
 
   // Window management
