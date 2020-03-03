@@ -64,7 +64,8 @@ public:
       t_ += Config::dt();
       for(size_t i=0; i<x_.size(); ++i) {
         x_.at(i).first->x_.head(2) = ((H_*t_).exp() - I_) * H_.inverse() * u0_;
-        x_.at(i).first->x_(2) = 0;
+        x_.at(i).first->x_(2) = (u0_.transpose() * (I_ * t_ - H_.inverse() * (H_ * t_).exp() + H_.inverse()) * u0_ );
+        x_.at(i).first->x_(2) /= c;
         update_particles(x_.at(i).first, x_.at(i).second);
         std::cout << "t = " << t_ << "\t" << x_.at(i).first->x_.transpose() << std::endl;
       }
