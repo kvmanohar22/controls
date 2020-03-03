@@ -15,16 +15,16 @@ using namespace Eigen;
 namespace {
 
   void test0() {
-    NonHolonomicIntegrator* controller = new NonHolonomicIntegrator();
+    // NonHolonomicIntegrator* controller = new NonHolonomicIntegrator(1, 2*PI);
 
-    // for rendering
-    controls::Window window(Config::window_w(), Config::window_h(), "Control Theory", controller); 
-    window.show(); 
+    // // for rendering
+    // controls::Window window(Config::window_w(), Config::window_h(), "Control Theory", controller); 
+    // window.show(); 
 
-    while (true) {
-      controller->step();
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
+    // while (true) {
+    //   controller->step();
+    //   std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    // }
   }
 }
 

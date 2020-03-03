@@ -12,9 +12,11 @@
 
 namespace controls {
 
-class NonHolonomicIntegrator {
+class NonHolonomicIntegratorSingle {
 public: 
-  NonHolonomicIntegrator() {
+  NonHolonomicIntegratorSingle(size_t id, double a, double c)
+  : index(id), a_(a), c_(c)
+  {
     x_.resize(1);
     x_[0].first = new controls::Particle(0, 0, 0);
     x_[0].second = list<Particle*>();
@@ -26,13 +28,16 @@ public:
     H_(1, 1) = 0;
   
     I_ = Matrix2d::Identity();
+    u0 = a_ * c_;
 
-    // initial input 
-    u0_(0) = std::sqrt(u0); 
-    u0_(1) = std::sqrt(u0); 
+    // initial input
+    u0_(0) = std::sqrt(u0/2);
+    u0_(1) = std::sqrt(u0/2); 
+    // u0_(0) = 0;
+    // u0_(1) = std::sqrt(u0); 
   }
 
- ~NonHolonomicIntegrator() {
+ ~NonHolonomicIntegratorSingle() {
     std::for_each(x_.begin(), x_.end(), [&](pair<Particle*, list<Particle*>>& x_pair) {
       delete x_pair.first;
       std::for_each(x_pair.second.begin(), x_pair.second.end(), [&](Particle* p) {
@@ -57,19 +62,29 @@ public:
     }
   }
 
+  bool print() {
+    if ((std::abs(t_ - 0.25) < 1e-9) || (std::abs(t_ - 0.5) < 1e-9) || (std::abs(t_ - 0.75) < 1e-9) || (std::abs(t_ - 1) < 1e-9))
+      return true;
+    return false;
+  }
+
   bool step() {
     {
       lock_t lock(x_mutex_); 
 
       t_ += Config::dt();
-      for(size_t i=0; i<x_.size(); ++i) {
-        x_.at(i).first->x_.head(2) = ((H_*t_).exp() - I_) * H_.inverse() * u0_;
-        x_.at(i).first->x_(2) = (u0_.transpose() * (I_ * t_ - H_.inverse() * (H_ * t_).exp() + H_.inverse()) * u0_ );
-        x_.at(i).first->x_(2) /= c;
-        update_particles(x_.at(i).first, x_.at(i).second);
-        std::cout << "t = " << t_ << "\t" << x_.at(i).first->x_.transpose() << std::endl;
+      if (t_ < 1) {
+        for(size_t i=0; i<x_.size(); ++i) {
+          x_.at(i).first->x_.head(2) = ((H_*t_).exp() - I_) * H_.inverse() * u0_;
+          x_.at(i).first->x_(2) = (u0_.transpose() * (I_ * t_ - H_.inverse() * (H_ * t_).exp() + H_.inverse()) * u0_ );
+          x_.at(i).first->x_(2) /= c_;
+          update_particles(x_.at(i).first, x_.at(i).second);
+          if (print()) {
+            std::cout << "ID = " << index << "\t t = " << t_ << "\t X = [" << x_.at(i).first->x_.transpose() << "]" << std::endl;
+          }
+        }
+        return true;
       }
-      return true;
     }
   }
 
@@ -96,15 +111,63 @@ private:
   Eigen::Matrix2d I_;
   Eigen::Matrix2d H_;
   Eigen::Vector2d u0_; 
-  double u0 = {2*PI*1};
-  double c  = {2*PI};
+  double u0;
+  size_t index;
+  double a_;
+  double c_;
   double t_={0};
   bool stop_exec_={false};
   std::mutex x_mutex_;
   std::mutex stop_mutex_;
 };
 
+class NonHolonomicIntegrator {
+public: 
+  NonHolonomicIntegrator(vector<double> a, vector<double> c) {
+    particles_.resize(a.size());
+    for (size_t i=0; i<a.size(); ++i) {
+      particles_[i] = new NonHolonomicIntegratorSingle(i, a[i], c[i]);
+    }
+  }
+
+ ~NonHolonomicIntegrator() {
+    for (size_t i=0; i<particles_.size(); ++i) {
+      delete particles_[i];
+    }
+  }
+
+  bool step() {
+    for (size_t i=0; i<particles_.size(); ++i) {
+      particles_[i]->step();
+    }
+    if (particles_[0]->print())
+      std::cout << "--------------------------\n";
+    return true;
+  }
+
+  inline bool stop() {
+    for (size_t i=0; i<particles_.size(); ++i) {
+      if (particles_[i]->stop())
+        return true;
+    }
+    return false;
+  }
+
+  inline controls::PARTICLE_TRAIL x()
+  {
+    PARTICLE_TRAIL trails(particles_.size());
+    for (size_t i=0; i<particles_.size(); ++i) {
+      PARTICLE_TRAIL new_trail;
+      new_trail = particles_[i]->x();
+      trails[i] = new_trail[0];
+    }
+    return trails;
+  }
+
+private:
+  vector<NonHolonomicIntegratorSingle*> particles_;
+};
+
 } // namespace controls
 
 #endif
-

@@ -46,3 +46,6 @@ target_include_directories(controls PRIVATE ${PROJECT_HEADERS}/controls)
 add_executable(test_non_holonomic_integrator test/test_non_holonomic_integrator.cpp)
 target_link_libraries(test_non_holonomic_integrator controls)
 
+add_executable(test_non_holonomic_integrator_02 test/test_non_holonomic_integrator_02.cpp)
+target_link_libraries(test_non_holonomic_integrator_02 controls)
+

@@ -42,7 +42,7 @@ public:
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
     float yaw = -90.0f, float pitch = 0.0f)
     : 
-      movement_speed(15.5f),
+      movement_speed(1.5f),
       mouse_sensitivity(0.1f),
       zoom(45.0f)
   {
