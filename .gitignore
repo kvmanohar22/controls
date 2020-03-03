@@ -3,4 +3,5 @@ compile_commands.json
 include/controls/ext/**
 src/glw3.c
 _site/**
-
+bundle/**
+Gemfile**

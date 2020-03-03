@@ -12,10 +12,16 @@
 
 namespace controls {
 
+enum class InputType {
+  Optimal,
+  Legendre22,
+  Legendre23
+};
+
 class NonHolonomicIntegratorSingle {
 public: 
-  NonHolonomicIntegratorSingle(size_t id, double a, double c)
-  : index(id), a_(a), c_(c)
+  NonHolonomicIntegratorSingle(size_t id, double a, double c, InputType type=InputType::Optimal)
+  : index(id), a_(a), c_(c), type_(type)
   {
     x_.resize(1);
     x_[0].first = new controls::Particle(0, 0, 0);
@@ -63,28 +69,68 @@ public:
   }
 
   bool print() {
+    return true;
     if ((std::abs(t_ - 0.25) < 1e-9) || (std::abs(t_ - 0.5) < 1e-9) || (std::abs(t_ - 0.75) < 1e-9) || (std::abs(t_ - 1) < 1e-9))
       return true;
     return false;
   }
 
+  // sinosuidal input [this is optimal when frequency is 2PI]
+  void sinosuidal() {
+    for(size_t i=0; i<x_.size(); ++i) {
+      x_.at(i).first->x_.head(2) = ((H_*t_).exp() - I_) * H_.inverse() * u0_;
+      x_.at(i).first->x_(2) = (u0_.transpose() * (I_ * t_ - H_.inverse() * (H_ * t_).exp() + H_.inverse()) * u0_ );
+      x_.at(i).first->x_(2) /= c_;
+      update_particles(x_.at(i).first, x_.at(i).second);
+      if (print()) {
+        std::cout << "ID = " << index << "\t t = " << t_ << "\t X = [" << x_.at(i).first->x_.transpose() << "]" << std::endl;
+      }
+    }
+  }
+
+  void Legendre22() {
+    for(size_t i=0; i<x_.size(); ++i) {
+      x_.at(i).first->x_(0) = (pow(t_, 3) - t_) / 2.0;
+      x_.at(i).first->x_(1) = (pow(t_, 3) - t_) / 2.0;
+      x_.at(i).first->x_(2) = 0;
+      update_particles(x_.at(i).first, x_.at(i).second);
+      if (print()) {
+        std::cout << "ID = " << index << "\t t = " << t_ << "\t X = [" << x_.at(i).first->x_.transpose() << "]" << std::endl;
+      }
+    }
+  }
+
+  void Legendre23() {
+    for(size_t i=0; i<x_.size(); ++i) {
+      x_.at(i).first->x_(0) = (pow(t_, 3) - t_) / 2.0;
+      x_.at(i).first->x_(1) = (1.25 * pow(t_, 4) - 1.5 * pow(t_, 2)) / 2.0;
+      x_.at(i).first->x_(2) = (5 * pow(t_, 6) - 9 * pow(t_, 4) + 6 * pow(t_, 2)) / 16;
+      update_particles(x_.at(i).first, x_.at(i).second);
+      if (print()) {
+        std::cout << "ID = " << index << "\t t = " << t_ << "\t X = [" << x_.at(i).first->x_.transpose() << "]" << std::endl;
+      }
+    }
+  }
+
   bool step() {
     {
       lock_t lock(x_mutex_); 
-
       t_ += Config::dt();
-      if (t_ < 1) {
-        for(size_t i=0; i<x_.size(); ++i) {
-          x_.at(i).first->x_.head(2) = ((H_*t_).exp() - I_) * H_.inverse() * u0_;
-          x_.at(i).first->x_(2) = (u0_.transpose() * (I_ * t_ - H_.inverse() * (H_ * t_).exp() + H_.inverse()) * u0_ );
-          x_.at(i).first->x_(2) /= c_;
-          update_particles(x_.at(i).first, x_.at(i).second);
-          if (print()) {
-            std::cout << "ID = " << index << "\t t = " << t_ << "\t X = [" << x_.at(i).first->x_.transpose() << "]" << std::endl;
-          }
-        }
-        return true;
+      switch (type_) {
+        case InputType::Optimal:
+          sinosuidal();
+          break;
+        case InputType::Legendre22:
+          Legendre22();
+          break;
+        case InputType::Legendre23:
+          Legendre23();
+          break;
+        default:
+          std::cerr << "Invalid input type" << std::endl;
+          return false;
       }
+      return true;
     }
   }
 
@@ -119,6 +165,7 @@ private:
   bool stop_exec_={false};
   std::mutex x_mutex_;
   std::mutex stop_mutex_;
+  InputType type_;
 };
 
 class NonHolonomicIntegrator {
@@ -126,7 +173,7 @@ public:
   NonHolonomicIntegrator(vector<double> a, vector<double> c) {
     particles_.resize(a.size());
     for (size_t i=0; i<a.size(); ++i) {
-      particles_[i] = new NonHolonomicIntegratorSingle(i, a[i], c[i]);
+      particles_[i] = new NonHolonomicIntegratorSingle(i, a[i], c[i], InputType::Legendre22);
     }
   }
 

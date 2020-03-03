@@ -32,12 +32,12 @@ namespace {
     }
   }
 
+  // (0, 0, 0) -> (3, 3, 5) [single particle]
   void test1() {
-    size_t num = 15;
+    size_t num = 2;
     vector<double> a(num, 1.0), c(num);
-    for (size_t i=0; i<num; ++i) {
-      c[i] = (i+1) * 2 * PI;
-    }
+    c[0] = 2  * PI;
+    c[1] = 30 * PI;
     NonHolonomicIntegrator* controller = new NonHolonomicIntegrator(a, c);
 
     // for rendering
@@ -50,7 +50,6 @@ namespace {
     }
   }
 
-  // (0, 0, 0) -> (3, 3, 5) [single particle]
   void test2() {
     size_t num = 15;
     vector<double> a(num, 1.0), c(num);
