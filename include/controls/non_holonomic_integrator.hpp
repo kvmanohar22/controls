@@ -14,11 +14,11 @@ namespace controls {
 
 enum class InputType {
   Optimal,
-  Legendre22,
+  Legendre13, // x3 will go to zero after every cycle
   Legendre23,
-  Legendre24,
+  Legendre24, // x3 will go to zero after every cycle
   Legendre34,
-  Legendre44,
+  Legendre46, // x3 will go to zero after every cycle
 };
 
 class NonHolonomicIntegratorSingle {
@@ -114,11 +114,11 @@ public:
     }
   }
 
-  void Legendre22() {
+  void Legendre13() {
     for(size_t i=0; i<x_.size(); ++i) {
-      x_.at(i).first->x_(0) = (pow(t_, 3) - t_) / 2.0;
-      x_.at(i).first->x_(1) = (pow(t_, 3) - t_) / 2.0;
-      x_.at(i).first->x_(2) = 0;
+      x_.at(i).first->x_(0) = (pow(t_, 2) - 1) / 2.0;
+      x_.at(i).first->x_(1) = (1.25 * pow(t_, 4) - 1.5 * pow(t_, 2) + 0.25) / 2.0;
+      x_.at(i).first->x_(2) = ((5.0/6.0)*pow(t_, 6)-2.5*pow(t_, 4)+pow(t_, 2)-((5.0/6.0)-2.5+1))/8.0;
       update_particles(x_.at(i).first, x_.at(i).second);
       if (print()) {
         std::cout << "ID = " << index << "\t t = " << t_ << "\t X = [" << x_.at(i).first->x_.transpose() << "]" << std::endl;
@@ -127,10 +127,12 @@ public:
   }
 
   void Legendre23() {
+    static double K2 = 35.0/4.0;
+    static double K1 = 1.0;
     for(size_t i=0; i<x_.size(); ++i) {
-      x_.at(i).first->x_(0) = (pow(t_, 3) - t_) / 2.0;
-      x_.at(i).first->x_(1) = (1.25 * pow(t_, 4) - 1.5 * pow(t_, 2)) / 2.0;
-      x_.at(i).first->x_(2) = (5 * pow(t_, 6) - 9 * pow(t_, 4) + 6 * pow(t_, 2)) / 16;
+      x_.at(i).first->x_(0) = K1 * ((pow(t_, 3) - t_) / 2.0);
+      x_.at(i).first->x_(1) = K2 * ((1.25 * pow(t_, 4) - 1.5 * pow(t_, 2) + 0.25) / 2.0);
+      x_.at(i).first->x_(2) = K1 * K2 * (((5.0/7.0) * pow(t_, 7) - (9.0/5.0) * pow(t_, 5) + pow(t_, 3) + t_ + 32.0/35.0) / 16.0);
       update_particles(x_.at(i).first, x_.at(i).second);
       if (print()) {
         std::cout << "ID = " << index << "\t t = " << t_ << "\t X = [" << x_.at(i).first->x_.transpose() << "]" << std::endl;
@@ -151,11 +153,12 @@ public:
   }
 
   void Legendre34() {
+    static double K2 = 1;
+    static double K1 = -1 * (63.0 * 64) / (2 * 628.0);
     for(size_t i=0; i<x_.size(); ++i) {
-      x_.at(i).first->x_(0) = (1.25 * pow(t_, 4) - 1.5 * pow(t_, 2)) / 2.0;
-      x_.at(i).first->x_(1) = (7 * pow(t_, 5) - 10 * pow(t_, 3) + 3 * t_) / 8.0;
-      x_.at(i).first->x_(2) = (1.25 * pow(t_, 4) - 1.5 * pow(t_, 2)) * (35 * pow(t_, 4) - 30 * pow(t_, 2) + 3) / 16
-        - (7 * pow(t_, 5) - 10 * pow(t_, 3) + 3 * t_) * (5 * pow(t_, 3) - 3 * t_) / 16;
+      x_.at(i).first->x_(0) = K1 * ((1.25 * pow(t_, 4) - 1.5 * pow(t_, 2) + 0.25) / 2.0);
+      x_.at(i).first->x_(1) = K2 * ((7 * pow(t_, 5) - 10 * pow(t_, 3) + 3 * t_) / 8.0);
+      x_.at(i).first->x_(2) = K1 * K2 * (((35.0/9.0) * pow(t_, 9) + (134.0/7.0) * pow(t_, 7) - (160.0/5.0) * pow(t_, 5) - 4 * pow(t_, 3) + 3 * t_ - 628.0/63.0)) / 64.0;
       update_particles(x_.at(i).first, x_.at(i).second);
       if (print()) {
         std::cout << "ID = " << index << "\t t = " << t_ << "\t X = [" << x_.at(i).first->x_.transpose() << "]" << std::endl;
@@ -163,11 +166,11 @@ public:
     }
   }
 
-  void Legendre44() {
+  void Legendre46() {
     for(size_t i=0; i<x_.size(); ++i) {
       x_.at(i).first->x_(0) = (7 * pow(t_, 5) - 10 * pow(t_, 3) + 3 * t_) / 8.0;
-      x_.at(i).first->x_(1) = (7 * pow(t_, 5) - 10 * pow(t_, 3) + 3 * t_) / 8.0;
-      x_.at(i).first->x_(2) = 0;
+      x_.at(i).first->x_(1) = (33 * pow(t_, 7) - 63 * pow(t_, 5) + 35 * pow(t_, 3) - 5 * t_) / 16.0;
+      x_.at(i).first->x_(2) = ((462.0/12.0)*pow(t_, 12) - (1320.0/10)*pow(t_, 10) + (1364.0/8.0)*pow(t_, 8) -(616.0/6.0)*pow(t_, 6)+(110.0/4.0)*pow(t_, 4) - (77 - (616./6.)+(110./4.))) / 128.0;
       update_particles(x_.at(i).first, x_.at(i).second);
       if (print()) {
         std::cout << "ID = " << index << "\t t = " << t_ << "\t X = [" << x_.at(i).first->x_.transpose() << "]" << std::endl;
@@ -185,8 +188,8 @@ public:
         case InputType::Optimal:
           sinosuidal();
           break;
-        case InputType::Legendre22:
-          Legendre22();
+        case InputType::Legendre13:
+          Legendre13();
           break;
         case InputType::Legendre23:
           Legendre23();
@@ -197,8 +200,8 @@ public:
         case InputType::Legendre34:
           Legendre34();
           break;
-        case InputType::Legendre44:
-          Legendre44();
+        case InputType::Legendre46:
+          Legendre46();
           break;
         default:
           std::cerr << "Invalid input type" << std::endl;
@@ -254,7 +257,7 @@ public:
 
     particles_.resize(a.size());
     for (size_t i=0; i<a.size(); ++i) {
-      particles_[i] = new NonHolonomicIntegratorSingle(i, a[i], c[i], InputType::Legendre23);
+      particles_[i] = new NonHolonomicIntegratorSingle(i, a[i], c[i], InputType::Legendre13);
     }
   }
 
@@ -268,8 +271,6 @@ public:
     for (size_t i=0; i<particles_.size(); ++i) {
       particles_[i]->step();
     }
-    if (particles_[0]->print())
-      std::cout << "--------------------------\n";
     return true;
   }
 

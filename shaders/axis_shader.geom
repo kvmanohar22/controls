@@ -23,7 +23,7 @@ void render_normal(vec4 pt, vec3 normal) {
   gl_Position = pt;
   EmitVertex();
 
-  gl_Position = pt + 0.5f * vec4(normalize(normal), 0.0f);
+  gl_Position = pt + 0.05f * vec4(normalize(normal), 0.0f);
   EmitVertex();
 
   EndPrimitive();
