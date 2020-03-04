@@ -109,7 +109,7 @@ bool Window::render() {
   glEnable(GL_MULTISAMPLE);        // anti-aliasing
   glEnable(GL_LINE_SMOOTH);        // smooth-out solid lines
   glEnable(GL_PROGRAM_POINT_SIZE); // enable to change point-size
-  glLineWidth(1.0f);
+  glLineWidth(5.0f);
 
   // render the points!
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

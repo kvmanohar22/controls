@@ -28,6 +28,14 @@ public:
     col_ = color(); 
   }
 
+  Particle(double x, double y, double z, Vector3d col)
+   : x_(Vector3d(x, y, z)),
+     col_(col),
+     start_x_(x_),
+     life_(1.0f)
+  {
+  }
+
   Particle(Vector3d parent_x)
    : x_(parent_x),
      start_x_(parent_x),

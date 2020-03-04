@@ -95,7 +95,7 @@ int main(int argc, char** argv) {
   srand(static_cast<unsigned> (time(nullptr)));
 
   if (argc == 1) {
-    std::cerr << "[ERROR] Usage: ./test_non_holonomic_integrator <test_number>" << std::endl;
+    std::cerr << "[ERROR] Usage: ./test_non_holonomic_integrator <test_number> <input_type>" << std::endl;
     return -1;
   }
 

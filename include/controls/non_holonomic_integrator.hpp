@@ -15,11 +15,37 @@ namespace controls {
 enum class InputType {
   Optimal,
   Legendre22,
-  Legendre23
+  Legendre23,
+  Legendre24,
+  Legendre34,
+  Legendre44,
 };
 
 class NonHolonomicIntegratorSingle {
 public: 
+  NonHolonomicIntegratorSingle(size_t id, double a, double c, Vector3d col, InputType type=InputType::Optimal)
+  : index(id), a_(a), c_(c), type_(type)
+  {
+    x_.resize(1);
+    x_[0].first = new controls::Particle(0, 0, 0, col);
+    x_[0].second = list<Particle*>();
+    
+    // transition matrix
+    H_(0, 0) = 0;
+    H_(0, 1) = -c;
+    H_(1, 0) =  c;
+    H_(1, 1) = 0;
+  
+    I_ = Matrix2d::Identity();
+    u0 = a_ * c_;
+
+    // initial input
+    u0_(0) = std::sqrt(u0/2);
+    u0_(1) = std::sqrt(u0/2); 
+    // u0_(0) = 0;
+    // u0_(1) = std::sqrt(u0); 
+  }
+
   NonHolonomicIntegratorSingle(size_t id, double a, double c, InputType type=InputType::Optimal)
   : index(id), a_(a), c_(c), type_(type)
   {
@@ -112,10 +138,49 @@ public:
     }
   }
 
+  void Legendre24() {
+    for(size_t i=0; i<x_.size(); ++i) {
+      x_.at(i).first->x_(0) = (pow(t_, 3) - t_) / 2.0;
+      x_.at(i).first->x_(1) = (7 * pow(t_, 5) - 10 * pow(t_, 3) + 3 * t_) / 8.0;
+      x_.at(i).first->x_(2) = (14 * pow(t_, 7) - 28 * pow(t_, 5) + 14 * pow(t_, 3)) / 16;
+      update_particles(x_.at(i).first, x_.at(i).second);
+      if (print()) {
+        std::cout << "ID = " << index << "\t t = " << t_ << "\t X = [" << x_.at(i).first->x_.transpose() << "]" << std::endl;
+      }
+    }
+  }
+
+  void Legendre34() {
+    for(size_t i=0; i<x_.size(); ++i) {
+      x_.at(i).first->x_(0) = (1.25 * pow(t_, 4) - 1.5 * pow(t_, 2)) / 2.0;
+      x_.at(i).first->x_(1) = (7 * pow(t_, 5) - 10 * pow(t_, 3) + 3 * t_) / 8.0;
+      x_.at(i).first->x_(2) = (1.25 * pow(t_, 4) - 1.5 * pow(t_, 2)) * (35 * pow(t_, 4) - 30 * pow(t_, 2) + 3) / 16
+        - (7 * pow(t_, 5) - 10 * pow(t_, 3) + 3 * t_) * (5 * pow(t_, 3) - 3 * t_) / 16;
+      update_particles(x_.at(i).first, x_.at(i).second);
+      if (print()) {
+        std::cout << "ID = " << index << "\t t = " << t_ << "\t X = [" << x_.at(i).first->x_.transpose() << "]" << std::endl;
+      }
+    }
+  }
+
+  void Legendre44() {
+    for(size_t i=0; i<x_.size(); ++i) {
+      x_.at(i).first->x_(0) = (7 * pow(t_, 5) - 10 * pow(t_, 3) + 3 * t_) / 8.0;
+      x_.at(i).first->x_(1) = (7 * pow(t_, 5) - 10 * pow(t_, 3) + 3 * t_) / 8.0;
+      x_.at(i).first->x_(2) = 0;
+      update_particles(x_.at(i).first, x_.at(i).second);
+      if (print()) {
+        std::cout << "ID = " << index << "\t t = " << t_ << "\t X = [" << x_.at(i).first->x_.transpose() << "]" << std::endl;
+      }
+    }
+  }
+
   bool step() {
     {
       lock_t lock(x_mutex_); 
       t_ += Config::dt();
+      if (t_ >= 1)
+        return false;
       switch (type_) {
         case InputType::Optimal:
           sinosuidal();
@@ -125,6 +190,15 @@ public:
           break;
         case InputType::Legendre23:
           Legendre23();
+          break;
+        case InputType::Legendre24:
+          Legendre24();
+          break;
+        case InputType::Legendre34:
+          Legendre34();
+          break;
+        case InputType::Legendre44:
+          Legendre44();
           break;
         default:
           std::cerr << "Invalid input type" << std::endl;
@@ -161,7 +235,7 @@ private:
   size_t index;
   double a_;
   double c_;
-  double t_={0};
+  double t_={-1};
   bool stop_exec_={false};
   std::mutex x_mutex_;
   std::mutex stop_mutex_;
@@ -171,9 +245,16 @@ private:
 class NonHolonomicIntegrator {
 public: 
   NonHolonomicIntegrator(vector<double> a, vector<double> c) {
+    // particles_.resize(4);
+    // size_t i=0;
+    // particles_[0] = new NonHolonomicIntegratorSingle(0, a[i], c[i], Vector3d(1, 0, 0), InputType::Legendre22);
+    // particles_[1] = new NonHolonomicIntegratorSingle(1, a[i], c[i], Vector3d(0, 1, 0), InputType::Legendre23);
+    // particles_[2] = new NonHolonomicIntegratorSingle(2, a[i], c[i], Vector3d(0, 0, 1), InputType::Legendre24);
+    // particles_[3] = new NonHolonomicIntegratorSingle(3, a[i], c[i], Vector3d(1, 1, 1), InputType::Legendre34);
+
     particles_.resize(a.size());
     for (size_t i=0; i<a.size(); ++i) {
-      particles_[i] = new NonHolonomicIntegratorSingle(i, a[i], c[i], InputType::Legendre22);
+      particles_[i] = new NonHolonomicIntegratorSingle(i, a[i], c[i], InputType::Legendre23);
     }
   }
 
@@ -200,8 +281,7 @@ public:
     return false;
   }
 
-  inline controls::PARTICLE_TRAIL x()
-  {
+  inline controls::PARTICLE_TRAIL x() {
     PARTICLE_TRAIL trails(particles_.size());
     for (size_t i=0; i<particles_.size(); ++i) {
       PARTICLE_TRAIL new_trail;
